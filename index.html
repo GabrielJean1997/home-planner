@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planner familial</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F3EE;--card:#fff;--ink:#23303F;--mut:#6B7787;--line:#E3DED5;--ok:#2FA66A;--warn:#E8A33D}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;touch-action:manipulation}
+button{font-family:inherit;color:inherit;cursor:pointer;border:0;background:none}
+input,select{font-family:inherit;user-select:text}
+#app{min-height:100%;display:flex;flex-direction:column;padding:18px 22px 22px;gap:16px}
+.top{display:flex;align-items:center;gap:14px}
+.top h1{margin:0;font-size:30px;font-weight:900;flex:1}
+.top .sub{color:var(--mut);font-weight:700;font-size:18px}
+.pill{background:#fff;border:2px solid var(--line);border-radius:999px;padding:10px 18px;font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px}
+.back{background:#fff;border:2px solid var(--line);border-radius:18px;width:64px;height:64px;font-size:30px}
+.kids{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;flex:1;align-content:center}
+.kid{border-radius:32px;padding:28px 20px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 8px 0 rgba(0,0,0,.12);min-height:260px;justify-content:center}
+.kid:active{transform:translateY(4px);box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.kid .av{font-size:92px;line-height:1}
+.kid .nm{font-size:34px;font-weight:900}
+.kid .pts{background:rgba(255,255,255,.28);border-radius:999px;padding:6px 18px;font-size:22px;font-weight:900}
+.tabs{display:flex;gap:10px;flex-wrap:wrap}
+.tab{background:#fff;border:3px solid var(--line);border-radius:20px;padding:12px 22px;font-size:22px;font-weight:900;display:flex;gap:8px;align-items:center}
+.tab.on{color:#fff;border-color:transparent}
+.goal{background:#fff;border:2px solid var(--line);border-radius:22px;padding:12px 18px;display:flex;align-items:center;gap:14px}
+.bar{height:20px;background:#ECE7DE;border-radius:999px;overflow:hidden;flex:1}
+.bar>i{display:block;height:100%;border-radius:999px;transition:width .5s}
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.step{position:relative;background:#fff;border:4px solid var(--line);border-radius:30px;padding:18px 12px 16px;display:flex;flex-direction:column;align-items:center;gap:8px;min-height:230px;justify-content:center;transition:.25s}
+.step .em{font-size:84px;line-height:1}
+.step .lb{font-size:24px;font-weight:900;text-align:center;line-height:1.15}
+.step .tm{font-size:17px;font-weight:800;color:var(--mut)}
+.step .chk{position:absolute;top:10px;right:10px;width:62px;height:62px;border-radius:50%;border:4px solid var(--line);background:#fff;font-size:34px;color:#fff;display:flex;align-items:center;justify-content:center}
+.step.done{background:#EAF7F0;border-color:var(--ok)}
+.step.done .em,.step.done .lb{opacity:.45}
+.step.done .chk{background:var(--ok);border-color:var(--ok)}
+.step.read{border-color:var(--warn);box-shadow:0 0 0 8px rgba(232,163,61,.25)}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{background:#fff;border:3px solid var(--line);border-radius:22px;padding:14px 22px;font-size:22px;font-weight:900;display:flex;align-items:center;gap:10px}
+.btn.big{color:#fff;border-color:transparent;box-shadow:0 6px 0 rgba(0,0,0,.14)}
+.btn.sm{padding:8px 14px;font-size:17px;border-radius:14px;border-width:2px}
+.btn.red{color:#C0392B}
+.lock{position:fixed;right:14px;bottom:14px;width:54px;height:54px;border-radius:50%;background:#fff;border:2px solid var(--line);font-size:24px;opacity:.55}
+.modal{position:fixed;inset:0;background:rgba(35,48,63,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.sheet{background:#fff;border-radius:28px;padding:24px;max-width:96vw;max-height:94vh;overflow:auto}
+.pin{display:grid;grid-template-columns:repeat(3,84px);gap:10px;justify-content:center;margin-top:14px}
+.pin button{height:76px;font-size:32px;font-weight:900;background:#F1EDE5;border-radius:18px}
+.dots{display:flex;gap:12px;justify-content:center;margin:12px 0;min-height:22px}
+.dots i{width:20px;height:20px;border-radius:50%;background:#D9D3C7}.dots i.f{background:var(--ink)}
+.start{position:fixed;inset:0;z-index:90;background:linear-gradient(160deg,#4C8DF6,#9B7BF2);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;font-size:34px;font-weight:900;text-align:center;padding:20px}
+.start .big{font-size:110px}
+.panel{background:#fff;border:2px solid var(--line);border-radius:24px;padding:18px}
+.row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.row input,.row select{border:2px solid var(--line);border-radius:12px;padding:10px 12px;font-size:18px;font-weight:700;background:#fff;min-width:0}
+.row .e{width:70px;text-align:center;font-size:24px}.row .l{flex:1;min-width:150px}.row .n{width:84px}.row .t{width:130px}
+h2{margin:6px 0 10px;font-size:22px}
+h3{margin:14px 0 6px;font-size:18px;color:var(--mut)}
+.muted{color:var(--mut);font-weight:700}
+.rw{display:flex;align-items:center;gap:14px;background:#fff;border:3px solid var(--line);border-radius:24px;padding:14px 18px;font-size:24px;font-weight:900}
+.rw.sel{border-color:#F2B134;background:#FFF8E6}
+.rw .em{font-size:50px}.rw .c{margin-left:auto;font-size:22px}
+.timer{position:fixed;left:0;right:0;bottom:0;background:#23303F;color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;font-size:24px;font-weight:900;z-index:40}
+.timer .bar{background:#44546A;height:28px}.timer .bar>i{background:#F2B134}
+.confetti{position:fixed;top:-60px;font-size:44px;z-index:80;pointer-events:none;animation:fall 2.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
+.pop{animation:pop .4s}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+.cd{border-radius:28px;color:#fff;padding:16px 22px;display:flex;align-items:center;gap:20px;box-shadow:0 6px 0 rgba(0,0,0,.14);transition:background .6s}
+.cdi{font-size:76px;line-height:1}.cdt{flex:1;min-width:0}.cdl{font-size:24px;font-weight:900}.cdn{font-size:64px;font-weight:900;line-height:1.05;margin:2px 0 6px;font-variant-numeric:tabular-nums}.cdx{font-size:20px;font-weight:800;margin-top:8px}
+.pbtn{width:62px;height:54px;border:2px solid var(--line);border-radius:14px;background:#fff;font-size:30px;line-height:1;display:flex;align-items:center;justify-content:center;flex:none}
+.egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:6px;margin-top:12px}.egrid button{font-size:34px;height:58px;background:#F6F3EE;border-radius:14px}
+.days{display:flex;gap:4px}.dchip{width:38px;height:38px;border-radius:50%;border:2px solid var(--line);font-weight:900;font-size:16px;background:#fff}.dchip.on{background:#23303F;color:#fff;border-color:#23303F}
+.row select{border:2px solid var(--line);border-radius:12px;padding:10px 12px;font-size:18px;font-weight:700;background:#fff}
+.modal.top{z-index:130}
+.fs{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vh;color:#fff;background:#2F6FA0;padding:2vh 4vw}
+.fs .fsl{font-size:clamp(28px,6vh,64px);font-weight:900}
+.fsr{position:relative;width:min(68vh,86vw);height:min(68vh,86vw)}
+.fsr svg{width:100%;height:100%}.fsn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:min(20vh,24vw);font-weight:900;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.chip{border:3px solid var(--line);border-radius:16px;padding:10px 16px;font-size:20px;font-weight:900;background:#fff}.chip.on{background:#23303F;color:#fff;border-color:#23303F}
+.cmd{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}.cmd input{flex:1;min-width:200px;border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-size:18px;font-weight:700}
+.cmdmsg{font-weight:800;color:#1F7A4D;margin:-4px 0 10px;min-height:22px}
+.toast{position:fixed;left:50%;top:16%;transform:translateX(-50%);z-index:95;background:#fff;border:4px solid #F2B134;border-radius:28px;padding:18px 30px;font-size:clamp(26px,5vw,44px);font-weight:900;color:#23303F;box-shadow:0 10px 0 rgba(0,0,0,.12);animation:toast 2.2s ease forwards;pointer-events:none;text-align:center;max-width:92vw}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,24px) scale(.8)}12%{opacity:1;transform:translate(-50%,0) scale(1.08)}22%{transform:translate(-50%,0) scale(1)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}
+.fstar{position:fixed;left:0;top:0;z-index:96;font-size:44px;line-height:1;pointer-events:none;will-change:transform}
+.rw.read,.step.read{border-color:#E8A33D;box-shadow:0 0 0 8px rgba(232,163,61,.25)}
+.rw .ds{font-size:19px;font-weight:700;color:var(--mut);margin-top:2px}
+.stt{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums;color:#C0392B}
+.step .bar.sm{height:12px;width:80%}.step.over{border-color:#D9534F}
+button.pill{font-family:inherit;color:inherit}
+.egrid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;flex:1}
+.emo{border-radius:34px;color:#fff;padding:20px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:210px;box-shadow:0 8px 0 rgba(0,0,0,.14);border:6px solid transparent}
+.emo.on{border-color:#fff;outline:6px solid #23303F}.emo .em{font-size:92px;line-height:1}.emo .lb{font-size:28px;font-weight:900;text-align:center}
+.breath{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px}
+.bc{width:min(42vh,64vw);aspect-ratio:200/270;transform:scale(.45);transform-origin:50% 66%;transition:transform 4s ease-in-out}.bc svg{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 18px rgba(0,0,0,.18))}
+.bt{font-size:clamp(34px,7vh,60px);font-weight:900}
+.alertb{background:#FDECEA;border:3px solid #E5534B;border-radius:22px;padding:14px 20px;font-size:22px;font-weight:900;text-align:left;color:#8A1F17}
+.gcard{background:#fff;border:4px solid var(--line);border-radius:36px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center}
+.gcard .em{font-size:min(24vh,38vw);line-height:1}.gcard .gt{font-size:clamp(28px,5.5vh,48px);font-weight:900;line-height:1.2}
+@keyframes look{0%,100%{transform:translateX(0)}25%{transform:translateX(-14%)}75%{transform:translateX(14%)}}
+@keyframes tapA{0%,100%{transform:scale(1) rotate(0)}40%{transform:scale(1.18) rotate(-7deg)}}
+@keyframes wig{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+@keyframes sniff{0%,100%{transform:scale(1)}30%{transform:scale(1.14)}60%{transform:scale(.96)}}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.22)}30%{transform:scale(1)}45%{transform:scale(1.15)}}
+@keyframes squeeze{0%,100%{transform:scale(1)}20%,65%{transform:scale(.6)}85%{transform:scale(1.05)}}
+@keyframes shoulders{0%,100%{transform:translateY(0)}30%,60%{transform:translateY(-16%)}}
+@keyframes relax{0%,100%{transform:scale(1.04)}50%{transform:scale(.96)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9%)}}
+.an-look{animation:look 2.6s ease-in-out infinite}.an-tapA{animation:tapA 1.4s ease-in-out infinite}.an-wig{animation:wig 1.8s ease-in-out infinite}.an-sniff{animation:sniff 2s ease-in-out infinite}.an-beat{animation:beat 1.3s ease-in-out infinite}.an-squeeze{animation:squeeze 4s ease-in-out infinite}.an-shoulders{animation:shoulders 3.5s ease-in-out infinite}.an-relax{animation:relax 4s ease-in-out infinite}.an-floaty{animation:floaty 3s ease-in-out infinite}
+.gcard .em,.rw .em{display:inline-block}
+.vbtn{right:78px}
+</style>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#4C8DF6"><meta name="mobile-web-app-capable" content="yes"></head>
+<body>
+<div id="app"></div>
+<div id="layer"></div>
+<script>
+(function(){
+'use strict';
+const KEY='fp_v1';
+const uid=()=>Math.random().toString(36).slice(2,8);
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const S=(l,e,t,p)=>({id:uid(),label:l,emoji:e,time:t||'',pts:p||1});
+function defaults(){
+  const lou=[
+    {id:uid(),name:'Matin',emoji:'🌅',from:5,bonus:3,steps:[S('Me lever','🛏️'),S('Aller à la toilette','🚽'),S('Déjeuner','🥣'),S('Me brosser les dents','🪥'),S("M'habiller",'👕'),S('Mettre mes souliers','👟'),S('Prendre mon sac','🎒')]},
+    {id:uid(),name:'Après l’école',emoji:'🏠',from:11,bonus:3,steps:[S('Enlever mes souliers','👟'),S('Ranger mon sac','🎒'),S('Collation','🍎'),S('Devoirs','✏️'),S('Jouer','🧸')]},
+    {id:uid(),name:'Dodo',emoji:'🌙',from:17,bonus:3,steps:[S('Mettre mon pyjama','👚'),S('Aller à la toilette','🚽'),S('Me brosser les dents','🪥'),S('Lire une histoire','📖'),S('Dormir','😴')]}
+  ];
+  const mini=()=>[
+    {id:uid(),name:'Matin',emoji:'🌅',from:5,bonus:3,steps:[S('Déjeuner','🥣'),S('Brosser les dents','🪥'),S("M'habiller",'👕'),S('Mettre mes souliers','👟')]},
+    {id:uid(),name:'Après l’école',emoji:'🏠',from:11,bonus:3,steps:[S('Collation','🍎'),S('Jouer','🧸')]},
+    {id:uid(),name:'Dodo',emoji:'🌙',from:17,bonus:3,steps:[S('Mettre mon pyjama','👚'),S('Brosser les dents','🪥'),S('Lire une histoire','📖'),S('Dormir','😴')]}
+  ];
+  const beh=()=>[{id:uid(),label:'Demander calmement',emoji:'🗣️',pts:2},{id:uid(),label:'Attendre mon tour',emoji:'⏳',pts:2},{id:uid(),label:'Aider quelqu’un',emoji:'🤝',pts:2},{id:uid(),label:'Rester calme',emoji:'😌',pts:3}];
+  return {v:1,date:today(),pin:'1234',voiceName:'',rate:0.9,done:{},bonusDone:{},
+    kids:[
+      {id:'lc',name:'Louis-Charles',emoji:'🦊',color:'#4C8DF6',points:0,goal:null,routines:lou,behaviors:beh()},
+      {id:'li',name:'Livia',emoji:'🌸',color:'#F27BA8',points:0,goal:null,routines:mini(),behaviors:[]},
+      {id:'la',name:'Laura',emoji:'🦋',color:'#9B7BF2',points:0,goal:null,routines:mini(),behaviors:[]}],
+    rewards:[{id:uid(),label:'30 min de tablette',emoji:'📱',cost:20},{id:uid(),label:'Choisir le souper',emoji:'🍕',cost:50},{id:uid(),label:'Soirée cinéma',emoji:'🎬',cost:80},{id:uid(),label:'Sortie au parc',emoji:'🛝',cost:100}]};
+}
+let state;
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return null}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}try{syncDirty()}catch(e){}}
+state=load()||defaults();
+function rollDay(){if(state.date!==today()){state.date=today();state.done={};state.bonusDone={};state.stepTimers={};save()}}
+if(!state.stepTimers)state.stepTimers={};
+if(!state.emoLog)state.emoLog=[];
+if(!state.emotions)state.emotions=[
+ {id:'joy',emoji:'😄',label:'content',color:'#E8B923',say:'{n}, tu es content. C’est bien de se sentir content.',alert:false,calm:false},
+ {id:'calm',emoji:'😌',label:'calme',color:'#4FAE6E',say:'{n}, tu es calme. C’est très bien.',alert:false,calm:false},
+ {id:'sad',emoji:'😢',label:'triste',color:'#5B8DEF',say:'{n}, tu es triste. C’est correct d’être triste. Tu peux demander un câlin.',alert:false,calm:true},
+ {id:'worry',emoji:'😟',label:'inquiet',color:'#EE8E3C',say:'{n}, tu es inquiet. C’est correct. Tu n’es pas seul.',alert:false,calm:true},
+ {id:'angry',emoji:'😠',label:'en colère',color:'#E5534B',say:'{n}, tu es en colère. C’est correct d’être en colère. Tu peux respirer avec moi.',alert:true,calm:true},
+ {id:'help',emoji:'😣',label:'j’ai besoin d’aide',color:'#8A4FB0',say:'{n}, tu as besoin d’aide. Respirons ensemble.',alert:true,calm:true}];
+if(state.calm)state.calm.forEach(c=>{if(!c.anim)c.anim={c1:'squeeze',c2:'tapA',c4:'beat'}[c.id]||'floaty'});
+if(!state.calm)state.calm=[
+ {id:'c1',emoji:'🧸',label:'Mon jouet sensoriel',desc:'Va chercher ton jouet sensoriel et serre-le doucement.'},
+ {id:'c2',emoji:'💧',label:'Boire de l’eau',desc:'Prends un verre d’eau et bois lentement.'},
+ {id:'c3',emoji:'🛋️',label:'Le coin calme',desc:'Va t’asseoir dans ton coin calme.'},
+ {id:'c4',emoji:'🤗',label:'Demander un câlin',desc:'Tu peux demander un câlin à un parent.'}];
+state.calm.forEach(c=>{if(!c.anim)c.anim={c1:'squeeze',c2:'tapA',c4:'beat'}[c.id]||'floaty'});
+state.kids.forEach(k=>k.routines.forEach(r=>{if(r.chain===undefined)r.chain=true}));
+if(!state.events)state.events=[{id:uid(),label:'On part pour l’école',emoji:'🚌',time:'07:45',days:[1,2,3,4,5]}];
+rollDay();
+
+const ui={sTok:0,readTok:0,toolId:null,fsTimer:null,fsChoose:null,pinFor:null,cmdMsg:'',picker:null,confirmDel:null,cdKey:'',prevScreen:'home',screen:'home',kidId:null,routineId:null,tab:'points',editKid:null,editRoutine:null,sound:false,reading:null,pin:'',timer:null,confirmReset:false,shopFor:null};
+const kid=id=>state.kids.find(k=>k.id===id);
+const curKid=()=>kid(ui.kidId);
+function pickRoutine(k){const h=new Date().getHours();let r=k.routines[0];k.routines.forEach(x=>{if(x.from<=h)r=x});return r}
+
+/* ---------- sound & voice ---------- */
+let actx=null,voices=[];
+function loadVoices(){try{voices=window.speechSynthesis.getVoices()}catch(e){}}
+try{loadVoices();window.speechSynthesis.onvoiceschanged=loadVoices}catch(e){}
+function beep(seq){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();let t=actx.currentTime;seq.forEach(([f,d])=>{const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.25,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+d+.02);t+=d*.8})}catch(e){}}
+const sndStep=()=>beep([[660,.12],[880,.16]]);
+const sndWin=()=>beep([[523,.14],[659,.14],[784,.14],[1047,.4]]);
+function stopSpeech(){ui.readTok++;ui.sTok++;ui.reading=null;try{window.speechSynthesis.cancel()}catch(e){}try{if(window.fully&&fully.stopTextToSpeech)fully.stopTextToSpeech()}catch(e){}}
+function voiceOn(){return ui.sound&&state.voiceOn!==false}
+function speak(text,cb){
+  const tok=++ui.sTok;let fired=false;const fin=()=>{if(fired)return;fired=true;if(tok===ui.sTok&&cb)cb()};
+  if(!voiceOn()){try{window.speechSynthesis.cancel()}catch(e){}cb&&setTimeout(fin,600);return}
+  if(window.fully&&typeof fully.textToSpeech==='function'){try{try{fully.stopTextToSpeech&&fully.stopTextToSpeech()}catch(e){}try{fully.textToSpeech(text,'fr-CA')}catch(e){fully.textToSpeech(text)}}catch(e){}if(cb)setTimeout(fin,900+text.length*85);return}
+  try{const s=window.speechSynthesis;s.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='fr-CA';
+    const v=(state.voiceURI&&voices.find(v=>v.voiceURI===state.voiceURI))||voices.find(v=>/fr[-_]CA/i.test(v.lang))||voices.find(v=>/^fr/i.test(v.lang));if(v){u.voice=v;u.lang=v.lang}
+    u.rate=state.rate||0.9;u.pitch=state.pitch||1;u.onend=fin;u.onerror=fin;s.speak(u);if(cb)setTimeout(fin,5000+text.length*110)}catch(e){cb&&setTimeout(fin,600)}
+}
+function confetti(){const em=['🎉','⭐','🌟','✨','🎈'];for(let i=0;i<26;i++){const e=document.createElement('div');e.className='confetti';e.textContent=em[i%em.length];e.style.left=Math.random()*100+'vw';e.style.animationDelay=(Math.random()*.8)+'s';e.style.fontSize=(30+Math.random()*30)+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),3800)}}
+
+/* ---------- points ---------- */
+function addPts(k,n){k.points=Math.max(0,(k.points||0)+n);save()}
+
+/* ---------- render ---------- */
+const $app=document.getElementById('app'),$layer=document.getElementById('layer');
+const pad=n=>String(n).padStart(2,'0');
+const DAYS=['D','L','M','M','J','V','S'];
+const EMOJIS='🛏️ 🚽 🥣 🍳 🥞 🥛 🍎 🍌 🥪 🍽️ 🪥 🚿 🛁 🧼 🧴 👕 👖 🧦 👟 🥾 🧥 🧤 🧢 🎒 📚 ✏️ 🖍️ 📖 🧸 🎮 🧩 🎨 🎬 📺 📱 🚌 🚗 🏫 🏠 🌳 🛝 🚲 ⚽ 🏊 🐶 🐱 🧹 🧺 🍽️ 🗑️ 🛒 🤝 🗣️ 😌 ⏳ 👂 🙏 💬 😴 🌙 ⭐ 🌟 🏆 🎁 🍕 🍦 🍿 🎂 ❤️ 😀 😊 🥰 🤗 😢 😡 😮‍💨 🧘 🎵 🎤 🔔 ⏰ ✅ 👍 👏 🎉'.split(' ');
+function pic(it){return it&&it.img?`<img src="${it.img}" alt="" style="width:1em;height:1em;object-fit:cover;border-radius:.16em;vertical-align:-.12em">`:esc(it?it.emoji:'')}
+function dateStr(){return new Date().toLocaleDateString('fr-CA',{weekday:'long',day:'numeric',month:'long'})}
+function timeStr(){return new Date().toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'})}
+function rewardsFor(k){return state.rewards.filter(r=>!r.for||r.for===k.id)}
+function progress(k){const r=pickRoutine(k);return {done:r.steps.filter(s=>state.done[s.id]).length,total:r.steps.length}}
+
+/* countdown to the next event (departure, bus, bedtime...) */
+function nextEvent(){
+  const n=new Date(),dow=n.getDay(),nowSec=n.getHours()*3600+n.getMinutes()*60+n.getSeconds();let best=null;
+  state.events.forEach(ev=>{if(!ev.time||!(ev.days||[]).includes(dow))return;const p=ev.time.split(':');const left=(+p[0]*3600+(+p[1])*60)-nowSec;
+    if(left>-300&&left<=4*3600&&(!best||left<best.left))best={ev,left}});
+  return best;
+}
+function fmtLeft(l){if(l<=0)return 'C’est l’heure !';const s=Math.ceil(l);if(s>=3600)return Math.floor(s/3600)+' h '+pad(Math.floor(s%3600/60));return Math.floor(s/60)+':'+pad(s%60)}
+function cdColor(l){return l<=0?'#2FA66A':l<300?'#D9534F':l<900?'#E8A33D':'#4C8DF6'}
+function bannerHTML(k){
+  const b=nextEvent();ui.cdKey=b?b.ev.id:'';if(!b)return '';
+  let extra='';
+  if(k){const p=progress(k);const rest=p.total-p.done;extra=`<div class="cdx">${rest===0?'✅ Routine terminée !':'Il reste '+rest+' étape'+(rest>1?'s':'')+' à faire'}</div>`}
+  else extra=`<div class="cdx">${state.kids.map(x=>{const p=progress(x);return esc(x.emoji)+' '+p.done+'/'+p.total}).join('  ·  ')}</div>`;
+  return `<div class="cd" id="cd" style="background:${cdColor(b.left)}"><div class="cdi">${pic(b.ev)}</div><div class="cdt"><div class="cdl">${esc(b.ev.label)}</div><div class="cdn" id="cdn">${fmtLeft(b.left)}</div><div class="bar" style="background:rgba(255,255,255,.35);height:16px"><i id="cdb" style="width:${Math.max(0,Math.min(100,b.left/3600*100))}%;background:#fff"></i></div>${extra}</div></div>`;
+}
+
+function renderHome(){
+  return `<div class="top"><div><h1>Bonjour la famille 👋</h1><div class="sub" id="dt">${esc(dateStr())} · ${esc(timeStr())}</div></div></div>
+  ${alertsHTML()}
+  ${bannerHTML(null)}
+  <div class="actions"><button class="btn" data-act="fsopen">⏱ Minuterie plein écran</button></div>
+  <div class="kids">${state.kids.map(k=>{const p=progress(k);return `<button class="kid" data-act="openKid" data-id="${k.id}" style="background:${esc(k.color)}"><div class="av">${pic(k)}</div><div class="nm">${esc(k.name)}</div><div class="pts">⭐ ${k.points}</div><div class="pts">✓ ${p.done} / ${p.total}</div></button>`}).join('')}</div>`;
+}
+function goalHTML(k){
+  const r=state.rewards.find(x=>x.id===k.goal);
+  if(!r)return `<div class="goal"><div style="font-size:30px">🎁</div><div style="font-weight:800;font-size:20px;flex:1">Choisis ta récompense !</div><button class="btn sm" data-act="shop">Voir</button></div>`;
+  const pct=Math.min(100,Math.round(k.points/r.cost*100));
+  return `<div class="goal"><div style="font-size:40px">${pic(r)}</div><div style="flex:1"><div id="goalTxt" style="font-weight:900;font-size:20px;margin-bottom:6px">${esc(r.label)} — ${Math.min(k.points,r.cost)} / ${r.cost} ⭐</div><div class="bar" id="goalbar"><i id="goalFill" style="width:${pct}%;background:${esc(k.color)}"></i></div></div><button class="btn sm" data-act="shop">Changer</button></div>`;
+}
+function renderKid(){
+  const k=curKid();const r=k.routines.find(x=>x.id===ui.routineId)||pickRoutine(k);ui.routineId=r.id;
+  return `<div class="top"><button class="back" data-act="home">←</button><div style="font-size:54px">${pic(k)}</div><div style="flex:1"><h1>${esc(k.name)}</h1></div><button class="pill" id="ptsPill" data-act="stars">⭐ ${k.points}</button></div>
+  ${bannerHTML(k)}
+  ${runPanel(k,r)}
+  ${goalHTML(k)}
+  <div class="tabs">${k.routines.map(x=>`<button class="tab ${x.id===r.id?'on':''}" data-act="routine" data-id="${x.id}" style="${x.id===r.id?'background:'+esc(k.color):''}"><span>${pic(x)}</span>${esc(x.name)}</button>`).join('')}</div>
+  <div class="actions">
+    <button class="btn big" data-act="emoopen" style="background:#E8873D">😊 Mes émotions</button><button class="btn big" data-act="calmgo" style="background:#2B8F8A">🫧 Je me calme</button>
+  </div>
+  <div class="actions">
+    <button class="btn big" data-act="readAll" style="background:${esc(k.color)}">🔊 Ma routine</button>
+    <button class="btn" data-act="timer" data-m="2">⏱ 2 min</button><button class="btn" data-act="timer" data-m="5">⏱ 5 min</button><button class="btn" data-act="timer" data-m="10">⏱ 10 min</button><button class="btn" data-act="fsopen">⛶ Plein écran</button>
+  </div>
+  <div class="steps">${r.steps.map(s=>{const d=state.done[s.id];return `<div class="step ${d?'done':''} ${ui.reading===s.id?'read':''}" data-act="say" data-id="${s.id}"><button class="chk" data-act="check" data-id="${s.id}">✓</button><div class="em">${pic(s)}</div><div class="lb">${esc(s.label)}</div>${stepMeta(s,d)}</div>`}).join('')}</div>`;
+}
+function endTime(s){const p=(s.time||'').split(':');if(p.length<2||!s.dur)return '';const t=(+p[0])*60+(+p[1])+Math.round(s.dur);return pad(Math.floor(t/60)%24)+':'+pad(t%60)}
+function stepMeta(s,done){
+  let o='';
+  if(s.time)o+=`<div class="tm">🕒 ${esc(s.time)}${s.dur?' → '+endTime(s):''}</div>`;
+  if(s.dur)o+=`<div class="tm">⏱ ${s.dur} min</div>`;
+  const t=state.stepTimers[s.id];
+  if(t&&!done){const left=t.end-Date.now();o+=`<div class="stt" id="stt-${s.id}">${left<=0?'Temps écoulé':fsFmt(left)}</div><div class="bar sm"><i id="stb-${s.id}" style="width:${Math.max(0,Math.min(100,left/t.total*100))}%;background:${left<=0?'#D9534F':'#4C8DF6'}"></i></div>`}
+  else if(s.dur&&!done)o+=`<button class="btn sm" data-act="stepgo" data-id="${s.id}">▶ Commencer</button>`;
+  return o;
+}
+function runPanel(k,r){
+  const s=r.steps.find(x=>state.stepTimers[x.id]&&!state.done[x.id]);if(!s)return '';
+  const t=state.stepTimers[s.id],left=t.end-Date.now();
+  return `<div class="cd" id="run" style="background:${cdColor(left/1000)}"><div class="cdi">${pic(s)}</div><div class="cdt"><div class="cdl">${esc(s.label)}</div><div class="cdn" id="runn">${left<=0?'Temps écoulé':fsFmt(left)}</div><div class="bar" style="background:rgba(255,255,255,.35);height:16px"><i id="runb" style="width:${Math.max(0,Math.min(100,left/t.total*100))}%;background:#fff"></i></div>
+  <div class="actions" style="margin-top:10px;align-items:center"><span style="font-weight:800">Parent :</span>${[1,2,5].map(m=>`<button class="btn sm" data-act="addtime" data-m="${m}" data-id="${s.id}" style="color:#23303F">+${m} min</button>`).join('')}</div></div></div>`;
+}
+function renderStars(){
+  const k=curKid();
+  return `<div class="top"><button class="back" data-act="openKid" data-id="${k.id}">←</button><div style="font-size:54px">⭐</div><div style="flex:1"><h1>Gagne encore des étoiles</h1></div><div class="pill">⭐ ${k.points}</div></div>
+  <div class="actions"><button class="btn big" data-act="readBeh" style="background:${esc(k.color)}">🔊 Lire</button><button class="btn" data-act="shop">🎁 Mes récompenses</button></div>
+  <div class="muted" style="font-size:20px">Un parent te donne les étoiles quand tu fais ces beaux gestes.</div>
+  <div style="display:grid;gap:12px">${k.behaviors.length?k.behaviors.map(b=>`<div class="rw ${ui.reading===b.id?'read':''}" data-act="sayBeh" data-id="${b.id}"><span class="em">${pic(b)}</span><span style="flex:1;text-align:left"><div>${esc(b.label)}</div>${b.desc?`<div class="ds">${esc(b.desc)}</div>`:''}</span><span class="c">+${b.pts} ⭐</span></div>`).join(''):'<div class="muted" style="font-size:22px">Pas encore d’objectifs. Les parents peuvent en ajouter.</div>'}</div>`;
+}
+function behText(b){return b.label+'. '+(b.desc?b.desc+'. ':'')+'Ça te donne '+b.pts+' étoile'+(b.pts>1?'s':'')+'.'}
+function readSeq(intro,items,textFn){
+  if(!voiceOn()){showToast('🔇 La voix est désactivée');return}
+  const tok=++ui.readTok,scr=ui.screen;let i=0;
+  const alive=()=>tok===ui.readTok&&ui.screen===scr;
+  speak(intro,function nxt(){
+    if(!alive())return;
+    if(i>=items.length){ui.reading=null;render();return}
+    const it=items[i++];ui.reading=it.id;render();speak(textFn(it),()=>setTimeout(nxt,700));
+  });
+}
+function startStepTimer(k,s,delay){
+  const m=parseFloat(s.dur);if(!m)return;
+  state.stepTimers[s.id]={end:Date.now()+m*60000,total:m*60000,k:k.id,w:{}};save();
+  const say=()=>speak(k.name+', tu as '+m+' minute'+(m>1?'s':'')+' pour '+s.label+'.');
+  if(delay)setTimeout(say,delay);else say();
+  if(ui.screen==='kid'||ui.screen==='home')render();
+}
+function addTime(id,m){
+  const t=state.stepTimers[id];if(!t)return false;
+  t.end+=m*60000;t.total+=m*60000;const left=(t.end-Date.now())/1000;t.w=t.w||{};
+  [5,2,1].forEach(x=>{if(left>x*60)delete t.w[x]});if(left>0)t.exp=false;
+  save();speak('Ok, '+m+' minute'+(m>1?'s':'')+' de plus.');if(ui.screen==='kid')render();return true;
+}
+function parentActive(){return Date.now()<(ui.parentUntil||0)}
+function renderShop(){
+  const k=curKid();
+  return `<div class="top"><button class="back" data-act="openKid" data-id="${k.id}">←</button><div style="font-size:54px">🎁</div><div style="flex:1"><h1>Mes récompenses</h1></div><div class="pill">⭐ ${k.points}</div></div>
+  <div class="actions"><button class="btn big" data-act="readShop" style="background:${esc(k.color)}">🔊 Lire</button><button class="btn" data-act="stars">⭐ Gagner des étoiles</button></div>
+  <div class="muted" style="font-size:20px">Touche une récompense pour en faire ton but.</div>
+  <div style="display:grid;gap:12px">${rewardsFor(k).map(r=>{const pct=Math.min(100,Math.round(k.points/r.cost*100));return `<button class="rw ${k.goal===r.id?'sel':''} ${ui.reading===r.id?'read':''}" data-act="goal" data-id="${r.id}"><span class="em">${pic(r)}</span><span style="flex:1;text-align:left"><div>${esc(r.label)}</div><div class="bar" style="margin-top:8px;height:14px"><i style="width:${pct}%;background:${esc(k.color)}"></i></div></span><span class="c">${Math.min(k.points,r.cost)} / ${r.cost} ⭐</span></button>`}).join('')}</div>`;
+}
+
+/* ---------- parent ---------- */
+function picBtn(attrs,it){return `<button class="pbtn" data-act="pick" ${attrs}>${pic(it)}</button>`}
+function rowsHTML(listKey,items,fields){
+  return items.map((it,i)=>`<div class="row">${fields.map(f=>{
+    const d=`data-list="${listKey}" data-i="${i}" data-f="${f}"`;
+    if(f==='emoji')return picBtn(`data-list="${listKey}" data-i="${i}"`,it);
+    if(f==='label')return `<input class="l" value="${esc(it.label)}" ${d}>`;
+    if(f==='time')return `<input class="t" type="time" value="${esc(it.time)}" ${d}>`;
+    if(f==='pts')return `<input class="n" type="number" min="0" max="99" value="${it.pts}" title="points" ${d}>`;
+    if(f==='dur')return `<input class="n" type="number" min="0" max="240" placeholder="min" value="${it.dur||''}" title="Durée de l’étape en minutes (optionnel)" ${d}>`;
+    if(f==='desc')return `<input class="l" style="flex-basis:100%" placeholder="Explication lue à voix haute (optionnel)" value="${esc(it.desc||'')}" ${d}>`;
+    if(f==='anim')return `<select ${d} title="Animation">${[['floaty','Flotte'],['beat','Bat comme un cœur'],['squeeze','Serre'],['wig','Se balance'],['tapA','Rebondit'],['look','Regarde'],['sniff','Respire']].map(o=>`<option value="${o[0]}" ${(it.anim||'floaty')===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>`;
+    if(f==='color')return `<input type="color" value="${esc(it.color||'#888888')}" ${d} style="width:56px;height:46px;padding:2px">`;
+    if(f==='alert')return `<label class="muted" style="font-size:16px;display:flex;gap:4px;align-items:center"><input type="checkbox" ${it.alert?'checked':''} ${d} style="width:22px;height:22px">🔔</label>`;
+    if(f==='calm')return `<label class="muted" style="font-size:16px;display:flex;gap:4px;align-items:center"><input type="checkbox" ${it.calm?'checked':''} ${d} style="width:22px;height:22px">🫧</label>`;
+    if(f==='say')return `<input class="l" style="flex-basis:100%" placeholder="Phrase dite par la voix" value="${esc(it.say||'')}" ${d}>`;
+    if(f==='cost')return `<input class="n" type="number" min="1" max="999" value="${it.cost}" title="prix en points" ${d}>`;
+    if(f==='for')return `<select ${d} title="Pour qui ?"><option value="">Pour tous</option>${state.kids.map(k=>`<option value="${k.id}" ${it.for===k.id?'selected':''}>${esc(k.name)}</option>`).join('')}</select>`;
+    if(f==='days')return `<span class="days">${[1,2,3,4,5,6,0].map(n=>`<button class="dchip ${(it.days||[]).includes(n)?'on':''}" data-act="day" data-i="${i}" data-d="${n}">${DAYS[n]}</button>`).join('')}</span>`;
+    return ''}).join('')}
+    <button class="btn sm" data-act="up" data-list="${listKey}" data-i="${i}">↑</button><button class="btn sm red" data-act="del" data-list="${listKey}" data-i="${i}">✕</button></div>`).join('');
+}
+function getList(key){
+  if(key==='rewards')return state.rewards;
+  if(key==='events')return state.events;
+  if(key==='emotions')return state.emotions;
+  if(key==='calm')return state.calm;
+  const p=key.split(':');const k=kid(p[1]);if(!k)return null;
+  if(p[2]==='b')return k.behaviors;
+  if(p[2]==='r'){const r=k.routines.find(x=>x.id===p[3]);return r?r.steps:null}
+  return null;
+}
+function pickTarget(p){
+  if(!p)return null;
+  if(p.list){const L=getList(p.list);return L?L[p.i]:null}
+  if(p.rt){const q=p.rt.split(':'),k=kid(q[0]);return k?k.routines.find(x=>x.id===q[1]):null}
+  if(p.kid)return kid(p.kid);
+  return null;
+}
+function renderParent(){
+  const tabs=[['points','⭐ Points'],['rewards','🎁 Boutique'],['routines','📋 Routines'],['events','⏰ Départs'],['emotions','💬 Émotions'],['settings','⚙️ Réglages']];
+  let body='';
+  if(ui.tab==='points'){
+    body=state.kids.map(k=>`<div class="panel" style="margin-bottom:12px"><h2>${pic(k)} ${esc(k.name)} — ⭐ ${k.points}</h2>
+      <div class="actions">${k.behaviors.map(b=>`<button class="btn sm" data-act="beh" data-k="${k.id}" data-id="${b.id}">${pic(b)} ${esc(b.label)} <b>+${b.pts}</b></button>`).join('')}
+      <button class="btn sm" data-act="adj" data-k="${k.id}" data-n="1">+1</button><button class="btn sm" data-act="adj" data-k="${k.id}" data-n="-1">−1 (discret)</button></div>
+      <h3>Échanger contre une récompense</h3><div class="actions">${rewardsFor(k).map(r=>`<button class="btn sm" ${k.points<r.cost?'disabled style="opacity:.4"':''} data-act="redeem" data-k="${k.id}" data-id="${r.id}">${pic(r)} ${esc(r.label)} (${r.cost}⭐)</button>`).join('')}</div>
+      <h3>Comportements (pictogramme · texte · points gagnés)</h3>${rowsHTML('k:'+k.id+':b',k.behaviors,['emoji','label','pts','desc'])}
+      <button class="btn sm" data-act="add" data-list="k:${k.id}:b">+ Ajouter un comportement</button></div>`).join('');
+  }
+  if(ui.tab==='rewards'){
+    body=`<div class="panel"><h2>Récompenses réelles et leur prix en points</h2><div class="muted" style="margin-bottom:6px">Pictogramme · texte · prix · pour qui</div>${rowsHTML('rewards',state.rewards,['emoji','label','cost','for'])}<button class="btn sm" data-act="add" data-list="rewards">+ Ajouter une récompense</button></div>`;
+  }
+  if(ui.tab==='routines'){
+    const k=kid(ui.editKid)||state.kids[0];ui.editKid=k.id;const r=k.routines.find(x=>x.id===ui.editRoutine)||k.routines[0];ui.editRoutine=r.id;
+    body=`<div class="tabs" style="margin-bottom:10px">${state.kids.map(x=>`<button class="tab ${x.id===k.id?'on':''}" data-act="ek" data-id="${x.id}" style="${x.id===k.id?'background:'+esc(x.color):''}">${pic(x)} ${esc(x.name)}</button>`).join('')}</div>
+    <div class="tabs" style="margin-bottom:10px">${k.routines.map(x=>`<button class="tab ${x.id===r.id?'on':''}" data-act="er" data-id="${x.id}" style="${x.id===r.id?'background:'+esc(k.color):''}">${pic(x)} ${esc(x.name)}</button>`).join('')}<button class="tab" data-act="addRoutine">+ Routine</button></div>
+    <div class="panel"><h2>Cette routine</h2><div class="row">${picBtn('data-rt="'+k.id+':'+r.id+'"',r)}<input class="l" value="${esc(r.name)}" data-rtn="${k.id}:${r.id}:name">
+      <span class="muted">Affichée dès</span><select data-rtn="${k.id}:${r.id}:from">${Array.from({length:24},(_,h)=>`<option value="${h}" ${r.from===h?'selected':''}>${h} h</option>`).join('')}</select>
+      <button class="btn sm red" data-act="delRoutine" ${k.routines.length<2?'disabled style="opacity:.4"':''}>Supprimer</button></div>
+    <h2 style="margin-top:16px">Étapes</h2><div class="muted" style="margin-bottom:6px">Pictogramme · texte (lu à voix haute) · heure de début (optionnel) · durée en minutes (optionnel) · points</div>
+    ${rowsHTML('k:'+k.id+':r:'+r.id,r.steps,['emoji','label','time','dur','pts'])}<button class="btn sm" data-act="add" data-list="k:${k.id}:r:${r.id}">+ Ajouter une étape</button>
+    <div class="row"><label class="muted" style="display:flex;gap:8px;align-items:center;font-size:17px"><input type="checkbox" ${r.chain?'checked':''} data-chain="${k.id}:${r.id}" style="width:22px;height:22px"> Démarrer automatiquement la minuterie de l’étape suivante quand une étape est cochée</label></div>
+    <h3>Bonus quand toute la routine est faite</h3><div class="row"><input class="n" type="number" min="0" max="99" value="${r.bonus}" data-bonus="${k.id}:${r.id}"> <span class="muted">points</span></div></div>`;
+  }
+  if(ui.tab==='emotions'){
+    const log=state.emoLog.slice().reverse().slice(0,40);
+    body=`<div class="panel"><h2>Journal des émotions</h2>${log.length?log.map(x=>`<div class="row"><span style="font-size:28px">${esc(x.emoji)}</span><b>${esc(x.kn)}</b> ${esc(x.label)} <span class="muted">· ${esc(new Date(x.t).toLocaleString('fr-CA',{weekday:'short',hour:'2-digit',minute:'2-digit'}))}</span></div>`).join(''):'<div class="muted">Rien pour l’instant.</div>'}${log.length?'<button class="btn sm red" data-act="clearLog">Vider le journal</button>':''}</div>
+    <div class="panel" style="margin-top:12px"><h2>Émotions affichées</h2><div class="muted" style="margin-bottom:6px">Pictogramme · texte · couleur · 🔔 prévient les parents sur l’accueil · 🫧 propose de se calmer · phrase dite ({n} = prénom)</div>${rowsHTML('emotions',state.emotions,['emoji','label','color','alert','calm','say'])}<button class="btn sm" data-act="add" data-list="emotions">+ Ajouter une émotion</button></div>
+    <div class="panel" style="margin-top:12px"><h2>Boîte à outils pour se calmer</h2>${rowsHTML('calm',state.calm,['emoji','label','anim','desc'])}<button class="btn sm" data-act="add" data-list="calm">+ Ajouter une idée</button></div>`;
+  }
+  if(ui.tab==='events'){
+    body=`<div class="panel"><h2>Compte à rebours sur l’écran</h2><div class="muted" style="margin-bottom:8px">Ex. « On part pour l’école » à 7 h 45, lundi au vendredi. Le compte à rebours apparaît 4 h avant et devient orange puis rouge. La voix annonce 15, 10, 5 et 1 minute avant.</div>
+    ${rowsHTML('events',state.events,['emoji','label','time','days'])}<button class="btn sm" data-act="add" data-list="events">+ Ajouter un départ ou un rendez-vous</button></div>`;
+  }
+  if(ui.tab==='settings'){
+    body=`<div class="panel"><h2>Voix</h2><div class="row"><label style="display:flex;gap:10px;align-items:center;font-size:20px;font-weight:800"><input type="checkbox" data-vo="1" ${state.voiceOn!==false?'checked':''} style="width:26px;height:26px"> Voix activée (décoche pour tout lire en silence)</label></div><div class="row"><span class="muted">Nom de la voix :</span><input class="l" value="${esc(state.voiceName)}" placeholder="ex. Coco (Louis-Charles peut le choisir)" data-set="voiceName"></div>
+    <div class="row"><span class="muted">Voix de l’appareil :</span><select class="l" data-set="voiceURI" style="max-width:100%">${voiceOptions()}</select></div>
+    <div class="muted" style="margin:2px 0 6px">Les voix disponibles dépendent de la tablette. Pour des voix plus naturelles : Réglages Android → Gestion globale → Langue → Synthèse vocale → installer les voix de haute qualité en français (Canada).</div>
+    <div class="row"><span class="muted">Ton :</span><input type="range" min="0.8" max="1.3" step="0.05" value="${state.pitch||1}" data-set="pitch"></div>
+    <div class="row"><span class="muted">Vitesse :</span><input type="range" min="0.6" max="1.2" step="0.05" value="${state.rate}" data-set="rate"><button class="btn sm" data-act="testVoice">🔊 Tester</button></div>
+    <h2 style="margin-top:18px">Enfants</h2>${state.kids.map(k=>`<div class="row">${picBtn('data-kid="'+k.id+'"',k)}<input class="l" value="${esc(k.name)}" data-kn="${k.id}:name"><input type="color" value="${esc(k.color)}" data-kn="${k.id}:color" style="width:56px;height:46px;padding:2px"><button class="btn sm red" data-act="delKid" data-id="${k.id}" ${state.kids.length<2?'disabled style="opacity:.4"':''}>${ui.confirmDel===k.id?'Confirmer':'✕'}</button></div>`).join('')}
+    <button class="btn sm" data-act="addKid">+ Ajouter un enfant</button>
+    <h2 style="margin-top:18px">NIP parent</h2><div class="row"><input class="n" inputmode="numeric" maxlength="4" value="${esc(state.pin)}" data-set="pin"> <span class="muted">4 chiffres</span></div>
+    <h2 style="margin-top:18px">Synchronisation (téléphone ⇄ tablette)</h2>
+    <div class="muted" style="margin-bottom:6px">Même adresse, même clé et même code sur chaque appareil. Les changements apparaissent sur l’autre appareil en quelques secondes.</div>
+    <div class="row"><span class="muted">Adresse du projet :</span><input class="l" data-sy="url" placeholder="https://xxxx.supabase.co" value="${esc(ui.syncDraft.url)}" autocapitalize="off" autocorrect="off"></div>
+    <div class="row"><span class="muted">Clé publique :</span><input class="l" data-sy="key" placeholder="sb_publishable_… ou eyJ…" value="${esc(ui.syncDraft.key)}" autocapitalize="off" autocorrect="off"></div>
+    <div class="row"><span class="muted">Code famille :</span><input class="l" data-sy="code" placeholder="au moins 12 caractères" value="${esc(ui.syncDraft.code)}" autocapitalize="off" autocorrect="off"><button class="btn sm" data-act="syncGen">Générer</button></div>
+    <div class="actions"><button class="btn sm" data-act="syncOn">${syncOnFlag()?'Enregistrer':'Activer'}</button>${syncOnFlag()?'<button class="btn sm" data-act="syncNow">Synchroniser maintenant</button><button class="btn sm red" data-act="syncOff">Désactiver</button>':''}</div>
+    <div class="muted" id="syncMsg" style="margin:6px 0 0">${esc(ui.syncMsg||(syncOnFlag()?'Synchronisation active':'Synchronisation désactivée'))}</div>
+    <h2 style="margin-top:18px">Remise à zéro</h2><div class="muted" style="margin-bottom:6px">Version du planner : 12 (23 nov.)</div><div class="actions"><button class="btn sm" data-act="resetDay">Recommencer la journée</button><button class="btn sm red" data-act="resetPts">${ui.confirmReset?'Confirmer : tout remettre à 0':'Remettre les points à 0'}</button></div></div>`;
+  }
+  return `<div class="modal"><div class="sheet" style="width:min(980px,96vw)"><div class="top" style="margin-bottom:12px"><h1 style="font-size:26px">🔓 Mode parent</h1><button class="btn" data-act="closeParent">Fermer</button></div>
+  <div class="cmd"><input id="cmd" placeholder="Commande : « Change l’heure du départ à 7 h 30 »" autocomplete="off"><button class="btn sm" data-act="mic" id="micbtn" style="display:${(window.SpeechRecognition||window.webkitSpeechRecognition)?'flex':'none'}">🎤</button><button class="btn sm" data-act="cmdgo">OK</button></div><div class="cmdmsg">${esc(ui.cmdMsg)}</div>
+  <div class="tabs" style="margin-bottom:12px">${tabs.map(t=>`<button class="tab ${ui.tab===t[0]?'on':''}" data-act="ptab" data-id="${t[0]}" style="${ui.tab===t[0]?'background:#23303F':''}">${t[1]}</button>`).join('')}</div>${body}</div></div>`;
+}
+function renderPicker(){
+  const it=pickTarget(ui.picker);if(!it){ui.picker=null;return ''}
+  return `<div class="modal" style="z-index:70"><div class="sheet" style="width:min(720px,96vw)"><div class="top" style="margin-bottom:10px"><div style="font-size:60px">${pic(it)}</div><h1 style="font-size:24px">Choisir le pictogramme</h1><button class="btn" data-act="pickclose">Terminé</button></div>
+  <div class="actions" style="margin-bottom:12px"><label class="btn sm" style="cursor:pointer">📷 Photo ou image de la tablette<input type="file" accept="image/*" data-up="1" style="display:none"></label>${it.img?'<button class="btn sm red" data-act="pickclear">Retirer la photo</button>':''}</div>
+  <div class="row"><span class="muted">Ou écris un emoji :</span><input class="e" maxlength="8" value="${it.img?'':esc(it.emoji)}" data-pe="1"></div>
+  <div class="egrid">${EMOJIS.map(e=>`<button data-act="pickemoji" data-e="${e}">${e}</button>`).join('')}</div></div></div>`;
+}
+function voiceOptions(){
+  loadVoices();
+  if(!voices.length)return '<option value="">(aucune voix détectée)</option>';
+  const fr=voices.filter(v=>/^fr/i.test(v.lang)),ot=voices.filter(v=>!/^fr/i.test(v.lang));
+  const o=v=>`<option value="${esc(v.voiceURI)}" ${state.voiceURI===v.voiceURI?'selected':''}>${esc(v.name)} (${esc(v.lang)})</option>`;
+  return `<option value="">Automatique (français)</option>`+(fr.length?`<optgroup label="Français">${fr.map(o).join('')}</optgroup>`:'')+(ot.length?`<optgroup label="Autres langues">${ot.map(o).join('')}</optgroup>`:'');
+}
+function fsFmt(ms){const s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60)+':'+pad(s%60)}
+function renderFs(){
+  const f=ui.fsTimer;if(!f)return '';
+  const C=2*Math.PI*44;
+  return `<div class="fs" id="fs" style="background:${f.done?'#2FA66A':'#2F6FA0'}"><div class="fsl">${esc(f.label)}</div>
+  <div class="fsr"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="7"/><circle id="fsring" cx="50" cy="50" r="44" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="${C}" stroke-dashoffset="${f.done?C:C*(1-Math.max(0,f.end-Date.now())/f.total)}"/></svg><div class="fsn" id="fsn">${f.done?'✓':fsFmt(f.end-Date.now())}</div></div>
+  ${f.done?'<button class="btn big" data-act="fsclose" style="background:#fff;color:#23303F">OK</button>':'<button class="btn sm" data-act="fsstop" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.4)">Arrêter (NIP parent)</button>'}</div>`;
+}
+function renderFsChoose(){
+  const c=ui.fsChoose;if(!c)return '';
+  return `<div class="modal" style="z-index:60"><div class="sheet" style="width:min(640px,96vw)"><div class="top" style="margin-bottom:6px"><h1 style="font-size:26px">⏱ Minuterie plein écran</h1><button class="btn" data-act="fsno">Annuler</button></div>
+  <h3>Durée (minutes)</h3><div class="chips">${[1,2,3,5,10,15,20,30].map(m=>`<button class="chip ${c.min===m?'on':''}" data-act="fsmin" data-m="${m}">${m}</button>`).join('')}</div>
+  <div class="row"><span class="muted">Autre durée :</span><input class="n" type="number" min="0.5" max="180" step="0.5" value="${c.min}" data-fsc="1"> <span class="muted">min</span></div>
+  <h3>Titre affiché</h3><div class="chips">${['Minuterie','Retrait','Calme','Temps d’écran','Ménage'].map(l=>`<button class="chip ${c.label===l?'on':''}" data-act="fslbl" data-l="${esc(l)}">${esc(l)}</button>`).join('')}</div>
+  <button class="btn big" data-act="fsgo" style="background:#2F6FA0;margin-top:10px">▶ Démarrer</button></div></div>`;
+}
+function startFs(mins,label){ui.fsChoose=null;ui.fsTimer={label:label||'Minuterie',end:Date.now()+mins*60000,total:mins*60000,done:false};if(ui.screen==='parent'||ui.screen==='pin')ui.screen=ui.prevScreen||'home';ui.picker=null;render()}
+
+/* parent voice / typed commands (rule-based, French) */
+const NUMW={zero:0,un:1,une:1,deux:2,trois:3,quatre:4,cinq:5,six:6,sept:7,huit:8,neuf:9,dix:10,onze:11,douze:12,treize:13,quatorze:14,quinze:15,seize:16,vingt:20,trente:30,quarante:40,cinquante:50,soixante:60};
+function norm(s){return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’']/g,' ').replace(/\s+/g,' ').trim()}
+function numify(s){
+  s=s.replace(/\b(vingt|trente|quarante|cinquante)[\s-]+(?:et[\s-]+)?(un|une|deux|trois|quatre|cinq|six|sept|huit|neuf)\b/g,(m,a,b)=>NUMW[a]+NUMW[b]);
+  return s.replace(/\b(zero|une?|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante)\b/g,m=>NUMW[m]);
+}
+function parseTime(t){
+  const m=t.match(/\b(\d{1,2})\s*(?:h|heures?|:)\s*(?:et\s+)?(\d{2}|demie?|quart)?/);if(!m)return null;
+  const hh=+m[1];let mm=0;if(m[2]){mm=/^\d/.test(m[2])?+m[2]:/^demi/.test(m[2])?30:15}
+  if(hh>23||mm>59)return null;return pad(hh)+':'+pad(mm);
+}
+const STOP=new Set(['change','changer','mets','met','modifie','deplace','decale','remplace','heure','rappel','pour','dans','etape','routine','de','du','des','la','le','les','a','au','aux','et','on','en']);
+function toks(s){return norm(s).split(' ').filter(w=>w.length>=4&&!STOP.has(w))}
+function findKid(s){const n=norm(s);return state.kids.find(k=>n.includes(norm(k.name)))||state.kids.find(k=>norm(k.name).split(/[\s-]/).some(w=>w.length>2&&n.includes(w)))}
+function execCmd(raw){
+  const t=numify(norm(raw));if(!t)return 'Rien entendu.';
+  let m;
+  if(/(minuterie|timer|chrono|retrait)/.test(t)&&(m=t.match(/(\d+(?:[.,]\d+)?)\s*(secondes?|sec|minutes?|min)?/))){
+    let v=parseFloat(m[1].replace(',','.'));if(m[2]&&/^sec/.test(m[2]))v=v/60;
+    const label=/retrait/.test(t)?'Retrait':'Minuterie';startFs(v,label);return label+' de '+m[1]+(m[2]&&/^sec/.test(m[2])?' secondes':' minutes')+' démarrée.';
+  }
+  if((m=t.match(/\b(ajoute|rajoute)\s+(\d+)\s+minutes?/))){const id=Object.keys(state.stepTimers)[0];if(id&&addTime(id,+m[2]))return m[2]+' minutes ajoutées à l’étape en cours.';return 'Aucune étape en cours.'}
+  m=t.match(/\b(ajoute|donne|enleve|retire)\s+(\d+)\s+points?\s+(?:a|au|aux)?\s*(.+)/);
+  if(m){const k=findKid(m[3]);if(!k)return 'Quel enfant ? Je n’ai pas reconnu le prénom.';const n=+m[2]*(/^(enleve|retire)/.test(m[1])?-1:1);addPts(k,n);return (n>0?'+':'')+n+' point'+(Math.abs(n)>1?'s':'')+' pour '+k.name+' (total '+k.points+').'}
+  const tm=parseTime(t);
+  if(tm&&/(change|mets?|modifie|deplace|decale|remplace|heure|rappel)/.test(t)){
+    const kidHit=findKid(t),words=toks(t);let best=null,score=0;
+    state.events.forEach(ev=>{let s=toks(ev.label).filter(w=>words.includes(w)).length;if(/depart/.test(t)&&/(depart|part)/.test(norm(ev.label)))s+=2;if(s>score){score=s;best={ev}}});
+    state.kids.forEach(k=>{if(kidHit&&k!==kidHit)return;k.routines.forEach(r=>r.steps.forEach(st=>{const s=toks(st.label).filter(w=>words.includes(w)).length;if(s>score){score=s;best={st,k}}}))});
+    if(!best)return 'Je n’ai pas trouvé quoi modifier. Essaie : « Change l’heure du départ à 7 h 30 ».';
+    if(best.ev){best.ev.time=tm;save();return '« '+best.ev.label+' » : '+tm.replace(':',' h ')+'.'}
+    best.st.time=tm;save();return 'Rappel « '+best.st.label+' » ('+best.k.name+') : '+tm.replace(':',' h ')+'.';
+  }
+  return 'Pas compris. Exemples : « Minuterie 10 minutes », « Ajoute 3 points à Livia », « Change l’heure du départ à 7 h 30 ».';
+}
+
+const BUILTIN=[
+ {id:'breath',emoji:'🫧',label:'Respirer avec moi',desc:'On respire doucement ensemble.'},
+ {id:'five',emoji:'👀',label:'5 choses que je vois',desc:'On regarde autour de nous.'},
+ {id:'squeeze',emoji:'💪',label:'Serrer et relâcher',desc:'On serre fort, puis on relâche.'}];
+const GUIDES={
+ five:{steps:[
+  {e:'👀',a:'look',t:'Regarde autour de toi. Trouve 5 choses que tu vois.'},
+  {e:'✋',a:'tapA',t:'Touche 4 choses près de toi. Comment elles sont ?'},
+  {e:'👂',a:'wig',t:'Écoute. Trouve 3 sons.'},
+  {e:'👃',a:'sniff',t:'Respire. Trouve 2 odeurs.'},
+  {e:'💙',a:'beat',t:'Pense à 1 chose que tu aimes.'}]},
+ squeeze:{steps:[
+  {e:'✊',a:'squeeze',t:'Serre fort tes poings, comme si tu pressais un citron. Un, deux, trois, quatre, cinq.'},
+  {e:'😌',a:'relax',t:'Relâche. Laisse tes mains toutes molles.'},
+  {e:'🤷',a:'shoulders',t:'Monte tes épaules jusqu’à tes oreilles. Serre fort. Un, deux, trois.'},
+  {e:'😮‍💨',a:'relax',t:'Relâche et souffle doucement.'},
+  {e:'🦶',a:'squeeze',t:'Serre tes orteils. Un, deux, trois. Relâche.'},
+  {e:'💙',a:'beat',t:'Bravo. Ton corps est plus calme.'}]}};
+function emoSay(e,k){return (e.say||'{n}, tu es '+e.label+'.').replace(/\{n\}/g,k.name)}
+function alertsHTML(){
+  const lim=Date.now()-3*3600*1000;
+  const a=state.emoLog.filter(x=>x.alert&&!x.seen&&x.t>lim);
+  return a.map(x=>`<button class="alertb" data-act="seen" data-id="${x.id}">🔔 ${esc(x.kn)} : ${esc(x.emoji)} ${esc(x.label)} · ${esc(new Date(x.t).toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'}))} <span style="font-weight:700">(touche pour effacer)</span></button>`).join('');
+}
+function renderEmo(){
+  const k=curKid(),sel=ui.emoSel&&state.emotions.find(e=>e.id===ui.emoSel);
+  return `<div class="top"><button class="back" data-act="openKid" data-id="${k.id}">←</button><div style="font-size:54px">${pic(k)}</div><div style="flex:1"><h1>Comment tu te sens ?</h1></div></div>
+  ${sel?`<div class="goal" style="border-color:${esc(sel.color)}"><div style="font-size:56px">${pic(sel)}</div><div style="flex:1;font-weight:900;font-size:24px">${esc(emoSay(sel,k))}</div>${sel.calm?`<button class="btn big" data-act="calmgo" style="background:${esc(sel.color)}">🫧 Je me calme</button>`:''}</div>`:`<div class="muted" style="font-size:22px">Touche le visage qui ressemble à ce que tu ressens.</div>`}
+  <div class="egrid2">${state.emotions.map(e=>`<button class="emo ${ui.emoSel===e.id?'on':''}" data-act="emo" data-id="${e.id}" style="background:${esc(e.color)}"><div class="em">${pic(e)}</div><div class="lb">${esc(e.label)}</div></button>`).join('')}</div>`;
+}
+function renderCalm(){
+  const k=curKid();
+  const card=(b,act)=>`<div class="rw ${ui.reading===b.id?'read':''}" data-act="${act}" data-id="${b.id}"><span class="em an-${act==='saytool'?(b.anim||'floaty'):'floaty'}">${pic(b)}</span><span style="flex:1;text-align:left"><div>${esc(b.label)}</div>${b.desc?`<div class="ds">${esc(b.desc)}</div>`:''}</span></div>`;
+  return `<div class="top"><button class="back" data-act="openKid" data-id="${k.id}">←</button><div style="font-size:54px">🫧</div><div style="flex:1"><h1>Je me calme</h1></div></div>
+  <div class="actions"><button class="btn big" data-act="readCalm" style="background:#2B8F8A">🔊 Lire</button><button class="btn" data-act="emoopen">😊 Mes émotions</button></div>
+  <div style="display:grid;gap:12px">${BUILTIN.map(b=>card(b,'calmopen')).join('')}${state.calm.map(b=>card(b,'saytool')).join('')}</div>`;
+}
+function renderTool(){
+  const b=state.calm.find(x=>x.id===ui.toolId);if(!b)return renderCalm();
+  return `<div class="top"><button class="back" data-act="calmgo">←</button><div style="flex:1"><h1>${esc(b.label)}</h1></div></div><div class="gcard"><div class="em an-${b.anim||'floaty'}">${pic(b)}</div><div class="gt">${esc(b.desc||b.label)}</div></div><div class="actions"><button class="btn" data-act="toolrepeat">🔊 Répéter</button><button class="btn big" data-act="calmgo" style="background:#2B8F8A">Terminé ✓</button></div>`;
+}
+function renderBreath(){
+  return `<div class="top"><button class="back" data-act="calmgo">←</button><div style="font-size:54px">🫧</div><div style="flex:1"><h1>Respire avec moi</h1></div></div>
+  <div class="breath"><div id="bc" class="bc"><svg viewBox="0 0 200 270" aria-hidden="true"><defs><radialGradient id="bg" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#FF9A8B"/><stop offset="1" stop-color="#E5484D"/></radialGradient></defs><path d="M100 8C55 8 28 44 28 88c0 46 34 82 72 90 38-8 72-44 72-90C172 44 145 8 100 8Z" fill="url(#bg)"/><ellipse cx="72" cy="52" rx="14" ry="24" fill="#fff" opacity=".35" transform="rotate(25 72 52)"/><path d="M92 178h16l-8 12z" fill="#C93A3F"/><path d="M100 190c-14 18 14 28 0 48s12 20 0 30" fill="none" stroke="#7A8CA0" stroke-width="3" stroke-linecap="round"/></svg></div><div class="bt" id="bt">Prêt ?</div><div class="muted" id="bn" style="font-size:22px"></div><button class="btn big" data-act="breathgo" style="background:#2B8F8A">▶ Recommencer</button></div>`;
+}
+function renderGuide(){
+  const g=GUIDES[ui.guide.id],s=g.steps[ui.guide.i];
+  return `<div class="top"><button class="back" data-act="calmgo">←</button><div style="flex:1"><h1>${esc(BUILTIN.find(b=>b.id===ui.guide.id).label)}</h1></div><div class="pill">${ui.guide.i+1} / ${g.steps.length}</div></div>
+  <div class="gcard"><div class="em an-${s.a||'floaty'}">${s.e}</div><div class="gt">${esc(s.t)}</div></div>
+  <div class="actions"><button class="btn" data-act="guiderepeat">🔊 Répéter</button><button class="btn big" data-act="guidenext" style="background:#2B8F8A">${ui.guide.i+1<g.steps.length?'Suivant ▶':'Terminé ✓'}</button></div>`;
+}
+function runBreath(){
+  const tok=++ui.bTok,cycles=5;let c=0;
+  const ok=()=>tok===ui.bTok&&ui.screen==='breath';
+  const set=(txt,sc,dur,n)=>{const b=document.getElementById('bc'),t=document.getElementById('bt'),nn=document.getElementById('bn');if(!b)return;b.style.transitionDuration=dur+'s';b.style.transform='scale('+sc+') translateY('+(sc>.9?'-3%':'0')+')';t.textContent=txt;if(nn&&n!==undefined)nn.textContent=n};
+  set('Prêt ?',.45,.6,'');speak('On respire ensemble. Inspire par le nez, souffle par la bouche.');
+  const cycle=()=>{
+    if(!ok())return;
+    if(c>=cycles){set('Bravo !',.7,2,'');speak('Bravo, tu as très bien respiré.');return}
+    c++;set('Inspire…',1,4,c+' / '+cycles);speak('Inspire doucement');
+    setTimeout(()=>{if(!ok())return;set('Souffle…',.45,6);speak('Souffle lentement');setTimeout(cycle,6500)},4500);
+  };
+  setTimeout(cycle,5200);
+}
+function guideSay(){const g=GUIDES[ui.guide.id];speak(g.steps[ui.guide.i].t)}
+function renderPin(){
+  return `<div class="modal"><div class="sheet" style="text-align:center"><h2>NIP parent</h2><div class="dots">${[0,1,2,3].map(i=>`<i class="${i<ui.pin.length?'f':''}"></i>`).join('')}</div>
+  <div class="pin">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-act="pinkey" data-n="${n}">${n}</button>`).join('')}<button data-act="pincancel" style="font-size:22px">Annuler</button><button data-act="pinkey" data-n="0">0</button><button data-act="pinback">⌫</button></div></div></div>`;
+}
+function renderTimer(){
+  if(!ui.timer)return '';
+  return `<div class="timer"><span>⏱</span><div class="bar"><i id="tbar" style="width:100%"></i></div><span id="tleft"></span><button class="btn sm" data-act="timerstop" style="color:#23303F">Arrêter</button></div>`;
+}
+function render(){
+  if(ui.screen!=='breath')ui.bTok=(ui.bTok||0)+1;
+  const base=(ui.screen==='pin'||ui.screen==='parent')?(ui.prevScreen||'home'):ui.screen;
+  $app.innerHTML=base==='home'?renderHome():base==='kid'?renderKid():base==='stars'?renderStars():base==='emo'?renderEmo():base==='calm'?renderCalm():base==='breath'?renderBreath():base==='guide'?renderGuide():base==='tool'?renderTool():renderShop();
+  let layer='';
+  if(ui.screen==='pin')layer=renderPin().replace('<div class="modal">','<div class="modal" style="z-index:130">');
+  if(ui.screen==='parent')layer=renderParent()+(ui.picker?renderPicker():'');
+  $layer.innerHTML=renderFs()+layer+renderFsChoose()+renderTimer()+(!ui.sound?`<div class="start" data-act="start"><div class="big">🏠</div><div>Touche l’écran pour commencer</div></div>`:'')+`<button class="lock vbtn" data-act="vtoggle" title="Voix">${state.voiceOn===false?'🔇':'🔊'}</button><button class="lock" data-act="lock">🔒</button>`;
+  if(ui.timer)tickTimer();
+}
+
+/* ---------- actions ---------- */
+function stepsOf(k){return k.routines.find(x=>x.id===ui.routineId)||pickRoutine(k)}
+function toggleStep(id){
+  const k=curKid(),r=stepsOf(k),s=r.steps.find(x=>x.id===id);if(!s)return;
+  if(state.done[id]){delete state.done[id];addPts(k,-s.pts);if(state.bonusDone[r.id+':'+k.id]&&!r.steps.every(x=>state.done[x.id])){delete state.bonusDone[r.id+':'+k.id];addPts(k,-r.bonus)}save();render();return}
+  state.done[id]=true;delete state.stepTimers[id];const old=k.points;addPts(k,s.pts);sndStep();
+  if(r.chain){const nx=r.steps.slice(r.steps.indexOf(s)+1).find(x=>!state.done[x.id]&&x.dur&&!state.stepTimers[x.id]);if(nx)setTimeout(()=>startStepTimer(k,nx),2800)}
+  const chk=document.querySelector('.step[data-id="'+id+'"] .chk'),from=chk?chk.getBoundingClientRect():null;
+  const all=r.steps.every(x=>state.done[x.id]);
+  if(all&&!state.bonusDone[r.id+':'+k.id]){state.bonusDone[r.id+':'+k.id]=true;addPts(k,r.bonus);save();render();setTimeout(()=>{sndWin();confetti()},250);fly(from,old,k,'Bravo '+k.name+' ! Tu as terminé ta routine !')}
+  else{save();render();const M=['Bravo {n} !','Super travail, {n} !','Tu es formidable !','Excellent !','Bien joué, {n} !','Quel champion !','Continue comme ça, {n} !','Tu y arrives !','Wow, bravo !'];
+    fly(from,old,k,M[Math.floor(Math.random()*M.length)].replace('{n}',k.name))}
+}
+function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent='🌟 '+msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2300)}
+function fly(from,old,k,msg){
+  showToast(msg);speak(msg);
+  const pill=document.getElementById('ptsPill'),fill=document.getElementById('goalFill'),gt=document.getElementById('goalTxt'),bar=document.getElementById('goalbar');
+  const rw=state.rewards.find(x=>x.id===k.goal);
+  const setVals=p=>{if(pill)pill.textContent='⭐ '+p;if(rw&&fill){fill.style.width=Math.min(100,Math.round(p/rw.cost*100))+'%';if(gt)gt.textContent=rw.label+' — '+Math.min(p,rw.cost)+' / '+rw.cost+' ⭐'}};
+  const target=(rw&&bar)?bar:pill;
+  if(!from||!target||!document.body.animate){setVals(k.points);return}
+  setVals(old);
+  const tr=target.getBoundingClientRect();
+  const x0=from.left+from.width/2,y0=from.top+from.height/2;
+  const frac=(rw&&bar)?Math.min(1,old/rw.cost+0.02):0.5;
+  const x1=tr.left+tr.width*(rw&&bar?Math.max(.04,Math.min(.98,Math.min(100,Math.round(k.points/rw.cost*100))/100)):0.5),y1=tr.top+tr.height/2;
+  const n=Math.max(1,Math.min(6,k.points-old));let finished=0;
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');el.className='fstar';el.textContent='⭐';document.body.appendChild(el);
+    const xm=(x0+x1)/2+(Math.random()-.5)*120,ym=Math.min(y0,y1)-60-Math.random()*80,off=-22;
+    const a=el.animate([
+      {transform:`translate(${x0+off}px,${y0+off}px) scale(.5)`,opacity:1},
+      {transform:`translate(${xm+off}px,${ym+off}px) scale(1.7)`,opacity:1,offset:.45},
+      {transform:`translate(${x1+off}px,${y1+off}px) scale(.7)`,opacity:.95}],
+      {duration:950,delay:i*140,easing:'cubic-bezier(.35,.1,.3,1)',fill:'forwards'});
+    a.onfinish=()=>{el.remove();beep([[880+i*90,.07]]);finished++;
+      setVals(Math.min(k.points,old+Math.ceil((k.points-old)*finished/n)));
+      target.classList.remove('pop');void target.offsetWidth;target.classList.add('pop');
+      if(finished===n)setVals(k.points)};
+  }
+}
+function readAll(){
+  const k=curKid(),r=stepsOf(k);
+  const hello=state.voiceName?('Salut '+k.name+', c’est '+state.voiceName+'. Voici ta routine : '+r.name+'.'):('Salut '+k.name+'. Voici ta routine : '+r.name+'.');
+  readSeq(hello,r.steps,s=>s.label);
+}
+let tInt=null;
+function tickTimer(){
+  clearInterval(tInt);
+  tInt=setInterval(()=>{
+    if(!ui.timer){clearInterval(tInt);return}
+    const left=Math.max(0,ui.timer.end-Date.now()),pct=left/ui.timer.total*100;
+    const b=document.getElementById('tbar'),l=document.getElementById('tleft');
+    if(b)b.style.width=pct+'%';
+    if(l){const s=Math.ceil(left/1000);l.textContent=Math.floor(s/60)+':'+pad(s%60)}
+    if(left<=0){ui.timer=null;clearInterval(tInt);sndWin();render();speak('Le temps est écoulé.')}
+  },250);
+}
+function startTimer(m){ui.timer={end:Date.now()+m*60000,total:m*60000};render()}
+function loadImg(file,cb){const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const s=256,c=document.createElement('canvas'),r=Math.min(1,s/Math.max(im.width,im.height));c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.85))};im.src=fr.result};fr.readAsDataURL(file)}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('[data-act]');if(!t)return;
+  const a=t.dataset.act,id=t.dataset.id;
+  if(a!=='start'&&a!=='check'&&a!=='cmdgo'&&a!=='mic'&&a!=='testVoice'&&a!=='vtoggle')stopSpeech();
+  if(a==='vtoggle'){state.voiceOn=(state.voiceOn===false);save();if(state.voiceOn===false)stopSpeech();render();return}
+  if(a==='start'){ui.sound=true;beep([[880,.08]]);try{window.speechSynthesis.cancel();window.speechSynthesis.speak(new SpeechSynthesisUtterance(' '))}catch(_){}render();return}
+  if(a==='fsopen'){ui.fsChoose={min:5,label:'Minuterie'};render();return}
+  if(a==='fsno'){ui.fsChoose=null;render();return}
+  if(a==='fsmin'){ui.fsChoose.min=+t.dataset.m;render();return}
+  if(a==='fslbl'){ui.fsChoose.label=t.dataset.l;render();return}
+  if(a==='fsgo'){startFs(ui.fsChoose.min||5,ui.fsChoose.label);return}
+  if(a==='fsclose'){ui.fsTimer=null;render();return}
+  if(a==='fsstop'){ui.pinFor='timer';ui.pin='';ui.prevScreen=(ui.screen==='pin'||ui.screen==='parent')?ui.prevScreen:ui.screen;ui.screen='pin';render();return}
+  if(a==='cmdgo'){const i=document.getElementById('cmd');ui.cmdMsg=execCmd(i?i.value:'');if(ui.screen==='parent')render();speak(ui.cmdMsg);return}
+  if(a==='mic'){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;try{const r=new SR();r.lang='fr-CA';r.onresult=ev=>{const i=document.getElementById('cmd');if(i)i.value=ev.results[0][0].transcript;ui.cmdMsg=execCmd(ev.results[0][0].transcript);if(ui.screen==='parent')render()};r.onerror=()=>{ui.cmdMsg='Micro non disponible ici : utilise le micro du clavier.';render()};r.start()}catch(_){ui.cmdMsg='Micro non disponible ici : utilise le micro du clavier.';render()}return}
+  if(a==='lock'){ui.pinFor=null;ui.pin='';ui.prevScreen=ui.screen==='pin'||ui.screen==='parent'?ui.prevScreen:ui.screen;ui.screen='pin';render();return}
+  if(a==='pinkey'){if(ui.pin.length<4)ui.pin+=t.dataset.n;if(ui.pin.length===4){if(ui.pin===state.pin){if(ui.pinFor==='timer'){ui.fsTimer=null;ui.pinFor=null;ui.screen=ui.prevScreen||'home'}else if(ui.pinFor&&ui.pinFor.t==='addtime'){const pf=ui.pinFor;ui.pinFor=null;ui.parentUntil=Date.now()+120000;ui.screen=ui.prevScreen||'kid';addTime(pf.id,pf.m)}else{ui.screen='parent';ui.tab='points'}}else{ui.pin='';beep([[200,.25]])}}render();return}
+  if(a==='pinback'){ui.pin=ui.pin.slice(0,-1);render();return}
+  if(a==='pincancel'||a==='closeParent'){ui.pinFor=null;ui.screen=ui.prevScreen||'home';ui.picker=null;render();return}
+  if(a==='ptab'){ui.tab=id;ui.confirmReset=false;ui.confirmDel=null;render();return}
+  if(a==='home'){ui.screen='home';render();return}
+  if(a==='openKid'){ui.kidId=id||ui.kidId;ui.routineId=null;ui.screen='kid';render();return}
+  if(a==='routine'){ui.routineId=id;render();return}
+  if(a==='emoopen'){ui.emoSel=null;ui.screen='emo';render();return}
+  if(a==='emo'){const k=curKid(),e=state.emotions.find(x=>x.id===id);if(!e)return;ui.emoSel=id;state.emoLog.push({id:uid(),k:k.id,kn:k.name,emoji:e.emoji,label:e.label,t:Date.now(),alert:!!e.alert,seen:false});if(state.emoLog.length>200)state.emoLog=state.emoLog.slice(-200);save();render();speak(emoSay(e,k));return}
+  if(a==='seen'){const x=state.emoLog.find(y=>y.id===id);if(x){x.seen=true;save();render()}return}
+  if(a==='clearLog'){state.emoLog=[];save();render();return}
+  if(a==='calmgo'){ui.screen='calm';ui.reading=null;render();return}
+  if(a==='calmopen'){if(id==='breath'){ui.screen='breath';render();runBreath()}else{ui.guide={id,i:0};ui.screen='guide';render();guideSay()}return}
+  if(a==='saytool'){const b=state.calm.find(x=>x.id===id);if(b){ui.toolId=id;ui.screen='tool';render();speak(b.label+'. '+(b.desc||''))}return}
+  if(a==='toolrepeat'){const b=state.calm.find(x=>x.id===ui.toolId);if(b)speak(b.label+'. '+(b.desc||''));return}
+  if(a==='readCalm'){const k=curKid();readSeq('Voici des idées pour te calmer, '+k.name+'.',BUILTIN.concat(state.calm),b=>b.label+'. '+(b.desc||''));return}
+  if(a==='breathgo'){runBreath();return}
+  if(a==='guiderepeat'){guideSay();return}
+  if(a==='guidenext'){const g=GUIDES[ui.guide.id];if(ui.guide.i+1<g.steps.length){ui.guide.i++;render();guideSay()}else{ui.screen='calm';render();speak('Bravo, tu as terminé. Tu peux choisir autre chose pour te calmer.')}return}
+  if(a==='stars'){ui.screen='stars';render();return}
+  if(a==='stepgo'){const k=curKid(),s=stepsOf(k).steps.find(x=>x.id===id);if(s)startStepTimer(k,s);return}
+  if(a==='addtime'){const m=+t.dataset.m;if(parentActive()){addTime(id,m)}else{ui.pinFor={t:'addtime',id,m};ui.pin='';ui.prevScreen=(ui.screen==='pin'||ui.screen==='parent')?ui.prevScreen:ui.screen;ui.screen='pin';render()}return}
+  if(a==='readBeh'){const k=curKid();if(k.behaviors.length)readSeq('Voici comment gagner encore des étoiles, '+k.name+'.',k.behaviors,behText);return}
+  if(a==='sayBeh'){const b=curKid().behaviors.find(x=>x.id===id);if(b)speak(behText(b));return}
+  if(a==='readShop'){const k=curKid();readSeq('Voici tes récompenses, '+k.name+'.',rewardsFor(k),r=>{const miss=r.cost-k.points;return r.label+'. Ça coûte '+r.cost+' étoiles. '+(miss>0?'Il te manque '+miss+' étoile'+(miss>1?'s':'')+'.':'Tu as assez d’étoiles !')});return}
+  if(a==='shop'){ui.screen='shop';render();return}
+  if(a==='goal'){const k=curKid();k.goal=id;save();const r=state.rewards.find(x=>x.id===id);render();speak('Ton but : '+r.label);return}
+  if(a==='say'){const s=stepsOf(curKid()).steps.find(x=>x.id===id);if(s)speak(s.label);return}
+  if(a==='check'){toggleStep(id);return}
+  if(a==='readAll'){readAll();return}
+  if(a==='timer'){startTimer(+t.dataset.m);return}
+  if(a==='timerstop'){ui.timer=null;clearInterval(tInt);render();return}
+  /* parent actions */
+  if(a==='beh'){const k=kid(t.dataset.k),b=k.behaviors.find(x=>x.id===id);addPts(k,b.pts);render();return}
+  if(a==='adj'){addPts(kid(t.dataset.k),+t.dataset.n);render();return}
+  if(a==='redeem'){const k=kid(t.dataset.k),r=state.rewards.find(x=>x.id===id);if(k.points>=r.cost){addPts(k,-r.cost);if(k.goal===r.id)k.goal=null;save();render()}return}
+  if(a==='ek'){ui.editKid=id;ui.editRoutine=null;render();return}
+  if(a==='er'){ui.editRoutine=id;render();return}
+  if(a==='addRoutine'){const k=kid(ui.editKid);const r={id:uid(),name:'Nouvelle routine',emoji:'⭐',from:12,bonus:3,steps:[S('Nouvelle étape','⭐')]};k.routines.push(r);ui.editRoutine=r.id;save();render();return}
+  if(a==='delRoutine'){const k=kid(ui.editKid);if(k.routines.length>1){k.routines=k.routines.filter(x=>x.id!==ui.editRoutine);ui.editRoutine=null;ui.routineId=null;save();render()}return}
+  if(a==='addKid'){const cols=['#2FA6A0','#E8873D','#6FB04B','#C25BA8'];state.kids.push({id:uid(),name:'Nouvel enfant',emoji:'🐻',color:cols[state.kids.length%cols.length],points:0,goal:null,routines:[{id:uid(),name:'Matin',emoji:'🌅',from:5,bonus:3,steps:[S('Déjeuner','🥣')]}],behaviors:[]});save();render();return}
+  if(a==='delKid'){if(state.kids.length<2)return;if(ui.confirmDel!==id){ui.confirmDel=id}else{state.kids=state.kids.filter(x=>x.id!==id);ui.confirmDel=null;ui.editKid=null;save()}render();return}
+  if(a==='day'){const ev=state.events[+t.dataset.i],d=+t.dataset.d;ev.days=ev.days||[];ev.days=ev.days.includes(d)?ev.days.filter(x=>x!==d):ev.days.concat(d);save();render();return}
+  if(a==='add'){const L=getList(t.dataset.list),key=t.dataset.list;if(!L)return;
+    if(key==='rewards')L.push({id:uid(),label:'Nouvelle récompense',emoji:'🎁',cost:30,for:''});
+    else if(key==='events')L.push({id:uid(),label:'Nouveau départ',emoji:'⏰',time:'07:45',days:[1,2,3,4,5]});
+    else if(key==='emotions')L.push({id:uid(),emoji:'🙂',label:'nouvelle émotion',color:'#7A8CA0',say:'{n}, tu te sens ainsi.',alert:false,calm:false});
+    else if(key==='calm')L.push({id:uid(),emoji:'⭐',label:'Nouvelle idée',desc:'',anim:'floaty'});
+    else if(key.split(':')[2]==='b')L.push({id:uid(),label:'Nouveau comportement',emoji:'⭐',pts:2});
+    else L.push(S('Nouvelle étape','⭐'));
+    save();render();return}
+  if(a==='del'){const L=getList(t.dataset.list);if(L){L.splice(+t.dataset.i,1);save();render()}return}
+  if(a==='up'){const L=getList(t.dataset.list),i=+t.dataset.i;if(L&&i>0){[L[i-1],L[i]]=[L[i],L[i-1]];save();render()}return}
+  if(a==='pick'){ui.picker=t.dataset.list?{list:t.dataset.list,i:+t.dataset.i}:t.dataset.rt?{rt:t.dataset.rt}:{kid:t.dataset.kid};render();return}
+  if(a==='pickclose'){ui.picker=null;render();return}
+  if(a==='pickemoji'){const it=pickTarget(ui.picker);if(it){it.emoji=t.dataset.e;it.img='';save()}render();return}
+  if(a==='pickclear'){const it=pickTarget(ui.picker);if(it){it.img='';save()}render();return}
+  if(a==='testVoice'){const was=ui.sound;ui.sound=true;speak('Bonjour, c’est ma voix. Je vais t’aider avec ta routine.');ui.sound=was;return}
+  if(a==='resetDay'){state.done={};state.bonusDone={};save();render();return}
+  if(a==='syncGen'){const A='abcdefghjkmnpqrstuvwxyz23456789';let c='';const r=new Uint8Array(24);(window.crypto||{getRandomValues:x=>x.forEach((_,i)=>x[i]=Math.random()*256)}).getRandomValues(r);r.forEach(n=>c+=A[n%A.length]);ui.syncDraft.code=c;render();return}
+  if(a==='syncOn'){const u=(ui.syncDraft.url||'').replace(/\/+$/,''),c=ui.syncDraft.code||'',kk=ui.syncDraft.key||'';if(!/^https:\/\/[^\s]+$/.test(u)||kk.length<20||c.length<12){ui.syncMsg='⚠ Adresse (https://…), clé publique ou code invalide (12 caractères minimum pour le code).';render();return}sync={url:u,key:kk,code:c};try{localStorage.setItem(SKEY,JSON.stringify(sync))}catch(e){}syncLast=hash();ui.syncMsg='Connexion…';render();syncPull();return}
+  if(a==='syncNow'){ui.syncMsg='Synchronisation…';render();syncPull();return}
+  if(a==='syncOff'){sync={};try{localStorage.removeItem(SKEY)}catch(e){}ui.syncMsg='Synchronisation désactivée.';render();return}
+  if(a==='resetPts'){if(!ui.confirmReset){ui.confirmReset=true}else{state.kids.forEach(k=>k.points=0);state.done={};state.bonusDone={};state.stepTimers={};ui.confirmReset=false;save()}render();return}
+});
+function onField(e){
+  const t=e.target;
+  if(t.dataset&&t.dataset.sy){ui.syncDraft[t.dataset.sy]=t.value.trim();return}
+  if(t.dataset.list){const L=getList(t.dataset.list);if(!L)return;const it=L[+t.dataset.i],f=t.dataset.f;if(t.type==='checkbox'){it[f]=t.checked;save();return}it[f]=(f==='pts'||f==='cost')?Math.max(0,parseInt(t.value||'0',10)||0):(f==='dur'?(parseFloat(t.value)>0?parseFloat(t.value):''):t.value);save();return}
+  if(t.dataset.bonus){const p=t.dataset.bonus.split(':'),r=kid(p[0]).routines.find(x=>x.id===p[1]);r.bonus=Math.max(0,parseInt(t.value||'0',10)||0);save();return}
+  if(t.dataset.rtn){const p=t.dataset.rtn.split(':'),r=kid(p[0]).routines.find(x=>x.id===p[1]);r[p[2]]=p[2]==='from'?parseInt(t.value,10):t.value;save();return}
+  if(t.dataset.chain){const p=t.dataset.chain.split(':');kid(p[0]).routines.find(x=>x.id===p[1]).chain=t.checked;save();return}
+  if(t.dataset.vo){state.voiceOn=t.checked;save();if(!t.checked)stopSpeech();return}
+  if(t.dataset.fsc){ui.fsChoose.min=parseFloat(t.value)||5;return}
+  if(t.dataset.set){const f=t.dataset.set;state[f]=(f==='rate'||f==='pitch')?parseFloat(t.value):t.value;save();return}
+  if(t.dataset.kn){const p=t.dataset.kn.split(':');kid(p[0])[p[1]]=t.value;save();return}
+  if(t.dataset.pe){const it=pickTarget(ui.picker);if(it&&t.value){it.emoji=t.value;it.img='';save()}return}
+}
+document.addEventListener('input',onField);
+document.addEventListener('change',function(e){
+  const t=e.target;
+  if(t.dataset&&t.dataset.up&&t.files&&t.files[0]){const it=pickTarget(ui.picker);if(!it)return;loadImg(t.files[0],url=>{it.img=url;save();render()});return}
+  if(t.tagName==='SELECT'||(t.dataset&&(t.dataset.chain||t.dataset.vo)))onField(e);
+});
+
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='cmd'){ui.cmdMsg=execCmd(e.target.value);render();speak(ui.cmdMsg)}});
+setInterval(function(){
+  const f=ui.fsTimer;if(!f||f.done)return;const left=f.end-Date.now();
+  if(left<=0){f.done=true;sndWin();render();speak('Le temps est terminé.');return}
+  const n=document.getElementById('fsn'),r=document.getElementById('fsring');
+  if(n)n.textContent=fsFmt(left);if(r)r.setAttribute('stroke-dashoffset',String(2*Math.PI*44*(1-left/f.total)));
+},250);
+function stepTick(){
+  const ids=Object.keys(state.stepTimers);if(!ids.length)return;
+  let needRender=false;
+  ids.forEach(id=>{
+    const t=state.stepTimers[id],k=kid(t.k);if(!k){delete state.stepTimers[id];return}
+    let s=null;k.routines.forEach(r=>r.steps.forEach(x=>{if(x.id===id)s=x}));if(!s||state.done[id]){delete state.stepTimers[id];needRender=true;return}
+    const left=t.end-Date.now(),ls=left/1000;t.w=t.w||{};
+    [5,2,1].forEach(m=>{if(ls<=m*60&&ls>0&&m*60<t.total/1000&&!t.w[m]){t.w[m]=true;save();speak(k.name+', il reste '+m+' minute'+(m>1?'s':'')+' pour '+s.label+'.')}});
+    if(left<=0&&!t.exp){t.exp=true;save();sndStep();speak(k.name+', le temps est écoulé pour '+s.label+'.');needRender=true}
+    const pct=Math.max(0,Math.min(100,left/t.total*100)),txt=left<=0?'Temps écoulé':fsFmt(left);
+    [['stt-'+id,txt],['runn',txt]].forEach(([i,v])=>{const e=document.getElementById(i);if(e)e.textContent=v});
+    [['stb-'+id],['runb']].forEach(([i])=>{const e=document.getElementById(i);if(e)e.style.width=pct+'%'});
+    const run=document.getElementById('run');if(run)run.style.background=cdColor(ls);
+  });
+  if(needRender&&(ui.screen==='kid'||ui.screen==='home'))render();
+}
+/* ---------- live countdown + spoken reminders (neutral voice) ---------- */
+const said={};
+setInterval(function(){
+  stepTick();
+  const dt=document.getElementById('dt');if(dt)dt.textContent=dateStr()+' · '+timeStr();
+  const b=nextEvent(),key=b?b.ev.id:'';
+  if((ui.screen==='home'||ui.screen==='kid')&&key!==(ui.cdKey||'')){render();return}
+  if(b){const n=document.getElementById('cdn'),bar=document.getElementById('cdb'),cd=document.getElementById('cd');
+    if(n)n.textContent=fmtLeft(b.left);if(bar)bar.style.width=Math.max(0,Math.min(100,b.left/3600*100))+'%';if(cd)cd.style.background=cdColor(b.left)}
+},1000);
+setInterval(function(){
+  rollDay();
+  const n=new Date(),now=pad(n.getHours())+':'+pad(n.getMinutes());
+  const at=m=>{const x=new Date(n.getTime()+m*60000);return pad(x.getHours())+':'+pad(x.getMinutes())};
+  state.kids.forEach(k=>k.routines.forEach(r=>r.steps.forEach(s=>{
+    if(!s.time||state.done[s.id])return;
+    const k5=today()+s.id+'5',k0=today()+s.id+'0';
+    if(s.time===at(5)&&!said[k5]){said[k5]=1;if(ui.sound)speak(k.name+', dans 5 minutes : '+s.label+'.')}
+    if(s.time===now&&!said[k0]){said[k0]=1;if(s.dur&&!state.stepTimers[s.id]){if(ui.sound)startStepTimer(k,s)}else if(ui.sound){sndStep();speak(k.name+', c’est l’heure : '+s.label+'.')}}
+  })));
+  state.events.forEach(ev=>{
+    if(!ev.time||!(ev.days||[]).includes(n.getDay()))return;
+    [15,10,5,1].forEach(m=>{const kk=today()+ev.id+'m'+m;if(ev.time===at(m)&&!said[kk]){said[kk]=1;if(ui.sound)speak('Dans '+m+' minute'+(m>1?'s':'')+' : '+ev.label+'.')}});
+    const k0=today()+ev.id+'m0';if(ev.time===now&&!said[k0]){said[k0]=1;if(ui.sound){sndWin();speak('C’est l’heure : '+ev.label+'.')}}
+  });
+},15000);
+
+/* ---------- synchronisation (Supabase, RPC) ---------- */
+var SKEY='fp_sync',LOCAL_KEYS=['voiceURI','voiceOn','rate','pitch','voiceName'];
+var sync;try{sync=JSON.parse(localStorage.getItem(SKEY))||{}}catch(e){sync={}}
+ui.syncMsg='';ui.syncDraft={url:sync.url||'',key:sync.key||'',code:sync.code||''};
+var syncLast='',syncT=null,syncBusy=false,syncApplying=false,renderPending=false;
+function syncOnFlag(){return !!(sync&&sync.url&&sync.key&&sync.code)}
+async function rpc(fn,args){const h={'apikey':sync.key,'Content-Type':'application/json'};if(/^eyJ/.test(sync.key))h.Authorization='Bearer '+sync.key;
+  const r=await fetch(sync.url.replace(/\/+$/,'')+'/rest/v1/rpc/'+fn,{method:'POST',headers:h,body:JSON.stringify(args)});if(!r.ok)throw new Error('http '+r.status);const t=await r.text();return t?JSON.parse(t):null}
+function payload(){const o={};Object.keys(state).forEach(k=>{if(LOCAL_KEYS.indexOf(k)<0&&k!=='_ts')o[k]=state[k]});return o}
+function hash(){return JSON.stringify(payload())}
+function setSyncMsg(m){ui.syncMsg=m;const el=document.getElementById('syncMsg');if(el)el.textContent=m}
+function toArr(x){return Array.isArray(x)?x:(x&&typeof x==='object'?Object.values(x):[])}
+function fixState(){['done','bonusDone','stepTimers'].forEach(k=>{if(!state[k]||typeof state[k]!=='object')state[k]={}});
+  ['emoLog','events','calm','emotions','rewards','kids'].forEach(k=>state[k]=toArr(state[k]));
+  state.events.forEach(ev=>ev.days=toArr(ev.days));
+  state.kids.forEach(k=>{k.behaviors=toArr(k.behaviors);k.routines=toArr(k.routines);k.routines.forEach(r=>r.steps=toArr(r.steps));if(k.goal===undefined)k.goal=null})}
+function syncDirty(){if(!syncOnFlag()||syncApplying)return;if(hash()===syncLast)return;clearTimeout(syncT);syncT=setTimeout(syncPush,900)}
+async function syncPush(){if(!syncOnFlag())return;const h=hash();state._ts=Date.now();try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+  try{await rpc('planner_put',{c:sync.code,d:payload(),t:state._ts});syncLast=h;setSyncMsg('✓ Synchronisé à '+new Date().toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'}))}
+  catch(e){setSyncMsg('⚠ Pas de connexion ou accès refusé — nouvel essai…');clearTimeout(syncT);syncT=setTimeout(syncPush,8000)}}
+function softRender(){const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)){renderPending=true;return}renderPending=false;render()}
+function applyRemote(d){if(!d||typeof d!=='object')return;const keep={};LOCAL_KEYS.forEach(k=>{if(k in state)keep[k]=state[k]});
+  Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,d,keep);fixState();
+  try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}syncLast=hash();softRender()}
+async function syncPull(){if(!syncOnFlag()||syncBusy)return;syncBusy=true;
+  try{const ts=await rpc('planner_ts',{c:sync.code});
+    if(ts===null){await syncPush()}
+    else if(ts>(state._ts||0)){const d=await rpc('planner_get',{c:sync.code});if(d)d._ts=ts;applyRemote(d);setSyncMsg('✓ Mis à jour à '+new Date().toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'}))}
+    else if(ts<(state._ts||0)||hash()!==syncLast){await syncPush()}
+    else setSyncMsg('✓ Synchronisé')}
+  catch(e){setSyncMsg('⚠ Pas de connexion ou accès refusé')}
+  finally{syncBusy=false;if(renderPending)softRender()}}
+syncLast=hash();
+setInterval(syncPull,4000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPull()});
+syncPull();
+
+render();
+})();
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
