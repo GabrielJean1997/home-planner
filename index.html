@@ -400,7 +400,7 @@ function renderParent(){
     <div class="row"><span class="muted">Code famille :</span><input class="l" data-sy="code" placeholder="au moins 12 caractères" value="${esc(ui.syncDraft.code)}" autocapitalize="off" autocorrect="off"><button class="btn sm" data-act="syncGen">Générer</button></div>
     <div class="actions"><button class="btn sm" data-act="syncOn">${syncOnFlag()?'Enregistrer':'Activer'}</button>${syncOnFlag()?'<button class="btn sm" data-act="syncNow">Synchroniser maintenant</button><button class="btn sm red" data-act="syncOff">Désactiver</button>':''}</div>
     <div class="muted" id="syncMsg" style="margin:6px 0 0">${esc(ui.syncMsg||(syncOnFlag()?'Synchronisation active':'Synchronisation désactivée'))}</div>
-    <h2 style="margin-top:18px">Remise à zéro</h2><div class="muted" style="margin-bottom:6px">Version du planner : 12 (23 nov.)</div><div class="actions"><button class="btn sm" data-act="resetDay">Recommencer la journée</button><button class="btn sm red" data-act="resetPts">${ui.confirmReset?'Confirmer : tout remettre à 0':'Remettre les points à 0'}</button></div></div>`;
+    <h2 style="margin-top:18px">Remise à zéro</h2><div class="muted" style="margin-bottom:6px">Version du planner : 13 (23 nov.)</div><div class="actions"><button class="btn sm" data-act="resetDay">Recommencer la journée</button><button class="btn sm red" data-act="resetPts">${ui.confirmReset?'Confirmer : tout remettre à 0':'Remettre les points à 0'}</button></div></div>`;
   }
   return `<div class="modal"><div class="sheet" style="width:min(980px,96vw)"><div class="top" style="margin-bottom:12px"><h1 style="font-size:26px">🔓 Mode parent</h1><button class="btn" data-act="closeParent">Fermer</button></div>
   <div class="cmd"><input id="cmd" placeholder="Commande : « Change l’heure du départ à 7 h 30 »" autocomplete="off"><button class="btn sm" data-act="mic" id="micbtn" style="display:${(window.SpeechRecognition||window.webkitSpeechRecognition)?'flex':'none'}">🎤</button><button class="btn sm" data-act="cmdgo">OK</button></div><div class="cmdmsg">${esc(ui.cmdMsg)}</div>
@@ -778,7 +778,7 @@ ui.syncMsg='';ui.syncDraft={url:sync.url||'',key:sync.key||'',code:sync.code||''
 var syncLast='',syncT=null,syncBusy=false,syncApplying=false,renderPending=false;
 function syncOnFlag(){return !!(sync&&sync.url&&sync.key&&sync.code)}
 async function rpc(fn,args){const h={'apikey':sync.key,'Content-Type':'application/json'};if(/^eyJ/.test(sync.key))h.Authorization='Bearer '+sync.key;
-  const r=await fetch(sync.url.replace(/\/+$/,'')+'/rest/v1/rpc/'+fn,{method:'POST',headers:h,body:JSON.stringify(args)});if(!r.ok)throw new Error('http '+r.status);const t=await r.text();return t?JSON.parse(t):null}
+  const r=await fetch(sync.url.replace(/\/+$/,'')+'/rest/v1/rpc/'+fn,{method:'POST',headers:h,body:JSON.stringify(args)});const t=await r.text();if(!r.ok){let m='';try{m=(JSON.parse(t).message||JSON.parse(t).hint||'')}catch(e){}throw new Error('code '+r.status+(m?' — '+String(m).slice(0,90):''))}return t?JSON.parse(t):null}
 function payload(){const o={};Object.keys(state).forEach(k=>{if(LOCAL_KEYS.indexOf(k)<0&&k!=='_ts')o[k]=state[k]});return o}
 function hash(){return JSON.stringify(payload())}
 function setSyncMsg(m){ui.syncMsg=m;const el=document.getElementById('syncMsg');if(el)el.textContent=m}
@@ -790,7 +790,7 @@ function fixState(){['done','bonusDone','stepTimers'].forEach(k=>{if(!state[k]||
 function syncDirty(){if(!syncOnFlag()||syncApplying)return;if(hash()===syncLast)return;clearTimeout(syncT);syncT=setTimeout(syncPush,900)}
 async function syncPush(){if(!syncOnFlag())return;const h=hash();state._ts=Date.now();try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
   try{await rpc('planner_put',{c:sync.code,d:payload(),t:state._ts});syncLast=h;setSyncMsg('✓ Synchronisé à '+new Date().toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'}))}
-  catch(e){setSyncMsg('⚠ Pas de connexion ou accès refusé — nouvel essai…');clearTimeout(syncT);syncT=setTimeout(syncPush,8000)}}
+  catch(e){setSyncMsg('⚠ '+(e&&e.message?e.message:'erreur')+' — nouvel essai…');clearTimeout(syncT);syncT=setTimeout(syncPush,8000)}}
 function softRender(){const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)){renderPending=true;return}renderPending=false;render()}
 function applyRemote(d){if(!d||typeof d!=='object')return;const keep={};LOCAL_KEYS.forEach(k=>{if(k in state)keep[k]=state[k]});
   Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,d,keep);fixState();
@@ -801,7 +801,7 @@ async function syncPull(){if(!syncOnFlag()||syncBusy)return;syncBusy=true;
     else if(ts>(state._ts||0)){const d=await rpc('planner_get',{c:sync.code});if(d)d._ts=ts;applyRemote(d);setSyncMsg('✓ Mis à jour à '+new Date().toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'}))}
     else if(ts<(state._ts||0)||hash()!==syncLast){await syncPush()}
     else setSyncMsg('✓ Synchronisé')}
-  catch(e){setSyncMsg('⚠ Pas de connexion ou accès refusé')}
+  catch(e){setSyncMsg('⚠ '+(e&&e.message?(/Failed to fetch|Load failed|NetworkError/i.test(e.message)?'Pas de connexion à cette adresse (vérifie l’adresse du projet)':e.message):'erreur'))}
   finally{syncBusy=false;if(renderPending)softRender()}}
 syncLast=hash();
 setInterval(syncPull,4000);
