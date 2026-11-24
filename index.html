@@ -44,7 +44,7 @@ input,select{font-family:inherit;user-select:text}
 .btn.big{color:#fff;border-color:transparent;box-shadow:0 6px 0 rgba(0,0,0,.14)}
 .btn.sm{padding:8px 14px;font-size:17px;border-radius:14px;border-width:2px}
 .btn.red{color:#C0392B}
-.lock{position:fixed;right:14px;bottom:14px;width:54px;height:54px;border-radius:50%;background:#fff;border:2px solid var(--line);font-size:24px;opacity:.55}
+.lock{z-index:20;position:fixed;right:14px;bottom:14px;width:54px;height:54px;border-radius:50%;background:#fff;border:2px solid var(--line);font-size:24px;opacity:.55}
 .modal{position:fixed;inset:0;background:rgba(35,48,63,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
 .sheet{background:#fff;border-radius:28px;padding:24px;max-width:96vw;max-height:94vh;overflow:auto}
 .pin{display:grid;grid-template-columns:repeat(3,84px);gap:10px;justify-content:center;margin-top:14px}
@@ -112,6 +112,40 @@ button.pill{font-family:inherit;color:inherit}
 .an-look{animation:look 2.6s ease-in-out infinite}.an-tapA{animation:tapA 1.4s ease-in-out infinite}.an-wig{animation:wig 1.8s ease-in-out infinite}.an-sniff{animation:sniff 2s ease-in-out infinite}.an-beat{animation:beat 1.3s ease-in-out infinite}.an-squeeze{animation:squeeze 4s ease-in-out infinite}.an-shoulders{animation:shoulders 3.5s ease-in-out infinite}.an-relax{animation:relax 4s ease-in-out infinite}.an-floaty{animation:floaty 3s ease-in-out infinite}
 .gcard .em,.rw .em{display:inline-block}
 .vbtn{right:78px}
+
+
+/* ---------- calendrier ---------- */
+.chero{border-radius:30px;padding:22px 26px;color:#fff;display:flex;align-items:center;gap:20px;box-shadow:0 8px 0 rgba(0,0,0,.12)}
+.chero .ci{font-size:84px;line-height:1}.chero .ct{font-size:20px;font-weight:800;opacity:.92}.chero .cb{font-size:clamp(30px,5.5vw,46px);font-weight:900;line-height:1.1}.chero .cs{font-size:20px;font-weight:800;margin-top:4px}
+.chrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.dodos{display:flex;gap:6px;flex-wrap:wrap;font-size:40px;line-height:1.1;margin-top:6px}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.wd{background:#fff;border:3px solid var(--line);border-radius:22px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:132px}
+.wd .w{font-weight:900;font-size:17px;color:var(--mut)}.wd .n{font-weight:900;font-size:30px}.wd .ic{font-size:30px;line-height:1}.wd .ev{font-size:22px;line-height:1.1;text-align:center}
+.wd.sch{background:#EAF2FF}.wd.off{background:#E7F7E3}.wd.today{border-color:#E8873D;box-shadow:0 0 0 3px rgba(232,135,61,.35)}.wd.sel{outline:4px solid #6B5BD2}
+.mg{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.mg .h{text-align:center;font-weight:900;color:var(--mut);font-size:16px}
+.mc{border-radius:14px;border:2px solid var(--line);background:#fff;min-height:64px;padding:4px;display:flex;flex-direction:column;align-items:center;font-weight:900;font-size:20px}
+.mc small{font-size:18px;line-height:1}.mc.sch{background:#EAF2FF}.mc.off{background:#E7F7E3}.mc.we{background:#F1EDE6;color:var(--mut)}.mc.today{border-color:#E8873D;box-shadow:0 0 0 3px rgba(232,135,61,.35)}.mc.sel{outline:3px solid #6B5BD2}.mc.out{opacity:.35}
+.up{display:flex;align-items:center;gap:14px;background:#fff;border:3px solid var(--line);border-radius:22px;padding:12px 18px}
+.up .em{font-size:44px;line-height:1}.up .tx{flex:1;font-weight:900;font-size:22px}.up .tx div{font-weight:700;font-size:16px;color:var(--mut)}.up .c{font-weight:900;font-size:22px;background:#FFF1D6;border-radius:999px;padding:8px 16px;white-space:nowrap}
+
+/* ---------- thème hiver / Noël (accueil seulement) ---------- */
+#deco{display:none}
+body.th-winter{background:linear-gradient(180deg,#0E2342 0%,#1B3F6E 55%,#2E5F96 100%) fixed}
+html:has(body.th-winter){background:#0E2342}
+body.th-winter #deco{display:block;position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+body.th-winter #app{position:relative;z-index:1;padding-top:44px}
+body.th-winter #app>.top h1,body.th-winter #app>.top .sub{color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.35)}
+#deco .fl{position:absolute;top:-6vh;color:#fff;opacity:.9;animation:snowfall linear infinite;will-change:transform;text-shadow:0 0 6px rgba(255,255,255,.6)}
+@keyframes snowfall{0%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(var(--dx),55vh,0) rotate(180deg)}100%{transform:translate3d(calc(var(--dx)*-.5),112vh,0) rotate(360deg)}}
+#deco .garland{position:absolute;top:0;left:0;right:0;height:34px;display:flex;justify-content:space-around;align-items:flex-start;background:linear-gradient(180deg,rgba(0,0,0,.28),transparent)}
+#deco .garland i{width:14px;height:20px;border-radius:50% 50% 55% 55%;margin-top:6px;animation:blink 2.2s ease-in-out infinite;box-shadow:0 0 14px 4px currentColor;background:currentColor}
+#deco .garland i:nth-child(4n+1){color:#FF5A5F}#deco .garland i:nth-child(4n+2){color:#FFD43B;animation-delay:.5s}#deco .garland i:nth-child(4n+3){color:#4FD1A5;animation-delay:1s}#deco .garland i:nth-child(4n){color:#6CB4FF;animation-delay:1.5s}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+#deco .hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:110px}
+#deco .dc{position:absolute;bottom:14px;font-size:76px;line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.3))}
+@media (prefers-reduced-motion:reduce){#deco .fl,#deco .garland i{animation:none}}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#4C8DF6"><meta name="mobile-web-app-capable" content="yes"></head>
 <body>
@@ -150,6 +184,27 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}tr
 state=load()||defaults();
 function rollDay(){if(state.date!==today()){state.date=today();state.done={};state.bonusDone={};state.stepTimers={};save()}}
 if(!state.stepTimers)state.stepTimers={};
+function defaultSlips(){return [
+  {id:'s_hit',label:'Taper',emoji:'✋',pts:2,repairId:'r_excuse'},
+  {id:'s_yell',label:'Crier ou dire des mots blessants',emoji:'📢',pts:1,repairId:'r_calm'},
+  {id:'s_rule',label:'Ne pas écouter la consigne',emoji:'🚫',pts:1,repairId:'r_redo'}]}
+function defaultRepairs(){return [
+  {id:'r_excuse',label:'Aller s’excuser',emoji:'🙏',pts:1},
+  {id:'r_calm',label:'Redire calmement',emoji:'🗣️',pts:1},
+  {id:'r_redo',label:'Refaire ce qui était demandé',emoji:'🔁',pts:1}]}
+function migrateKid(k){
+  if(!Array.isArray(k.slips))k.slips=defaultSlips();
+  if(!Array.isArray(k.repairs)){
+    if(k.slips.some(x=>x.repair)){k.repairs=[];const seen={};k.slips.forEach(x=>{if(x.repair){const key=x.repair.trim().toLowerCase();if(!seen[key]){seen[key]='r_'+x.id;k.repairs.push({id:'r_'+x.id,label:x.repair,emoji:'🤝',pts:Math.max(0,x.rpts||1)})}x.repairId=seen[key]}delete x.repair;delete x.rpts})}
+    else k.repairs=defaultRepairs()}
+  if(k.fix===undefined)k.fix=null;
+  if(!k.place||typeof k.place!=='object'){const lc=k.id==='li'||k.id==='la';k.place={label:lc?'Garderie':'École',emoji:lc?'🧸':'🎒',days:[1,2,3,4,5]}}
+  k.place.days=toArr(k.place.days).map(Number)}
+state.kids.forEach(migrateKid);
+function defaultCal(){return {schoolDays:[1,2,3,4,5],items:[{id:'c_fri',emoji:'📱',label:'Soirée tablette',kind:'event',rep:'weekly',dow:'5',date:'',end:'',for:'',desc:''}]}}
+function normCal(){if(!state.cal||typeof state.cal!=='object')state.cal=defaultCal();state.cal.schoolDays=toArr(state.cal.schoolDays).map(Number);state.cal.items=toArr(state.cal.items)}
+function toArr(x){return Array.isArray(x)?x:(x&&typeof x==='object'?Object.values(x):[])}
+normCal();
 if(!state.emoLog)state.emoLog=[];
 if(!state.emotions)state.emotions=[
  {id:'joy',emoji:'😄',label:'content',color:'#E8B923',say:'{n}, tu es content. C’est bien de se sentir content.',alert:false,calm:false},
@@ -200,7 +255,7 @@ function addPts(k,n){k.points=Math.max(0,(k.points||0)+n);save()}
 const $app=document.getElementById('app'),$layer=document.getElementById('layer');
 const pad=n=>String(n).padStart(2,'0');
 const DAYS=['D','L','M','M','J','V','S'];
-const EMOJIS='🛏️ 🚽 🥣 🍳 🥞 🥛 🍎 🍌 🥪 🍽️ 🪥 🚿 🛁 🧼 🧴 👕 👖 🧦 👟 🥾 🧥 🧤 🧢 🎒 📚 ✏️ 🖍️ 📖 🧸 🎮 🧩 🎨 🎬 📺 📱 🚌 🚗 🏫 🏠 🌳 🛝 🚲 ⚽ 🏊 🐶 🐱 🧹 🧺 🍽️ 🗑️ 🛒 🤝 🗣️ 😌 ⏳ 👂 🙏 💬 😴 🌙 ⭐ 🌟 🏆 🎁 🍕 🍦 🍿 🎂 ❤️ 😀 😊 🥰 🤗 😢 😡 😮‍💨 🧘 🎵 🎤 🔔 ⏰ ✅ 👍 👏 🎉'.split(' ');
+const EMOJIS='🛏️ 🚽 🥣 🍳 🥞 🥛 🍎 🍌 🥪 🍽️ 🪥 🚿 🛁 🧼 🧴 👕 👖 🧦 👟 🥾 🧥 🧤 🧢 🎒 📚 ✏️ 🖍️ 📖 🧸 🎮 🧩 🎨 🎬 📺 📱 🚌 🚗 🎒 🏠 🌳 🛝 🚲 ⚽ 🏊 🐶 🐱 🧹 🧺 🍽️ 🗑️ 🛒 🤝 🗣️ 😌 ⏳ 👂 🙏 💬 😴 🌙 ⭐ 🌟 🏆 🎁 🍕 🍦 🍿 🎂 ❤️ 😀 😊 🥰 🤗 😢 😡 😮‍💨 🧘 🎵 🎤 🔔 ⏰ ✅ 👍 👏 🎉'.split(' ');
 function pic(it){return it&&it.img?`<img src="${it.img}" alt="" style="width:1em;height:1em;object-fit:cover;border-radius:.16em;vertical-align:-.12em">`:esc(it?it.emoji:'')}
 function dateStr(){return new Date().toLocaleDateString('fr-CA',{weekday:'long',day:'numeric',month:'long'})}
 function timeStr(){return new Date().toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'})}
@@ -228,7 +283,7 @@ function renderHome(){
   return `<div class="top"><div><h1>Bonjour la famille 👋</h1><div class="sub" id="dt">${esc(dateStr())} · ${esc(timeStr())}</div></div></div>
   ${alertsHTML()}
   ${bannerHTML(null)}
-  <div class="actions"><button class="btn" data-act="fsopen">⏱ Minuterie plein écran</button></div>
+  <div class="actions"><button class="btn" data-act="fsopen">⏱ Minuterie plein écran</button><button class="btn" data-act="cal" style="background:#6B5BD2;color:#fff">📅 Calendrier</button></div>
   <div class="kids">${state.kids.map(k=>{const p=progress(k);return `<button class="kid" data-act="openKid" data-id="${k.id}" style="background:${esc(k.color)}"><div class="av">${pic(k)}</div><div class="nm">${esc(k.name)}</div><div class="pts">⭐ ${k.points}</div><div class="pts">✓ ${p.done} / ${p.total}</div></button>`}).join('')}</div>`;
 }
 function goalHTML(k){
@@ -241,11 +296,12 @@ function renderKid(){
   const k=curKid();const r=k.routines.find(x=>x.id===ui.routineId)||pickRoutine(k);ui.routineId=r.id;
   return `<div class="top"><button class="back" data-act="home">←</button><div style="font-size:54px">${pic(k)}</div><div style="flex:1"><h1>${esc(k.name)}</h1></div><button class="pill" id="ptsPill" data-act="stars">⭐ ${k.points}</button></div>
   ${bannerHTML(k)}
+  ${fixHTML(k)}
   ${runPanel(k,r)}
   ${goalHTML(k)}
   <div class="tabs">${k.routines.map(x=>`<button class="tab ${x.id===r.id?'on':''}" data-act="routine" data-id="${x.id}" style="${x.id===r.id?'background:'+esc(k.color):''}"><span>${pic(x)}</span>${esc(x.name)}</button>`).join('')}</div>
   <div class="actions">
-    <button class="btn big" data-act="emoopen" style="background:#E8873D">😊 Mes émotions</button><button class="btn big" data-act="calmgo" style="background:#2B8F8A">🫧 Je me calme</button>
+    <button class="btn big" data-act="emoopen" style="background:#E8873D">😊 Mes émotions</button><button class="btn big" data-act="calmgo" style="background:#2B8F8A">🫧 Je me calme</button><button class="btn big" data-act="stars" style="background:#6B5BD2">📋 Mes comportements</button><button class="btn big" data-act="cal" style="background:#C25BA8">📅 Mon calendrier</button>
   </div>
   <div class="actions">
     <button class="btn big" data-act="readAll" style="background:${esc(k.color)}">🔊 Ma routine</button>
@@ -269,10 +325,24 @@ function runPanel(k,r){
   return `<div class="cd" id="run" style="background:${cdColor(left/1000)}"><div class="cdi">${pic(s)}</div><div class="cdt"><div class="cdl">${esc(s.label)}</div><div class="cdn" id="runn">${left<=0?'Temps écoulé':fsFmt(left)}</div><div class="bar" style="background:rgba(255,255,255,.35);height:16px"><i id="runb" style="width:${Math.max(0,Math.min(100,left/t.total*100))}%;background:#fff"></i></div>
   <div class="actions" style="margin-top:10px;align-items:center"><span style="font-weight:800">Parent :</span>${[1,2,5].map(m=>`<button class="btn sm" data-act="addtime" data-m="${m}" data-id="${s.id}" style="color:#23303F">+${m} min</button>`).join('')}</div></div></div>`;
 }
+function fixText(k){const f=k.fix;return 'Tu peux réparer, '+k.name+'. '+f.repair+'. Tu regagnes '+f.rpts+' étoile'+(f.rpts>1?'s':'')+'.'}
+function fixHTML(k){if(!k||!k.fix)return '';const f=k.fix;
+  return `<div class="alertb" style="background:#E8F6F5;border-color:#2B8F8A;color:#14524F;display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span style="font-size:40px">🤝</span><span style="flex:1;min-width:200px"><div>Tu peux réparer : ${esc(f.repair)}</div><div style="font-size:18px">Tu regagnes ${f.rpts} ⭐</div></span><button class="btn sm" data-act="fixsay">🔊</button>${f.claimed?'<span style="font-weight:900">✋ Un parent va regarder</span>':'<button class="btn" data-act="fixclaim" style="background:#2B8F8A">J’ai réparé</button>'}</div>`}
+function repairOf(k,b){return (k.repairs||[]).find(x=>x.id===b.repairId)}
+function slipText(b){const k=curKid(),rp=repairOf(k,b);return b.label+'. '+(b.desc?b.desc+'. ':'')+'Ça enlève '+b.pts+' étoile'+(b.pts>1?'s':'')+'.'+(rp&&rp.pts>0?' Pour réparer : '+rp.label+'.':'')}
+function repairText(r){return r.label+'. '+(r.desc?r.desc+'. ':'')+'Tu regagnes '+r.pts+' étoile'+(r.pts>1?'s':'')+'.'}
 function renderStars(){
-  const k=curKid();
-  return `<div class="top"><button class="back" data-act="openKid" data-id="${k.id}">←</button><div style="font-size:54px">⭐</div><div style="flex:1"><h1>Gagne encore des étoiles</h1></div><div class="pill">⭐ ${k.points}</div></div>
-  <div class="actions"><button class="btn big" data-act="readBeh" style="background:${esc(k.color)}">🔊 Lire</button><button class="btn" data-act="shop">🎁 Mes récompenses</button></div>
+  const k=curKid(),tab=({gain:1,lose:1,fix:1})[ui.bhTab]?ui.bhTab:'gain';
+  const T=(id,l)=>`<button class="tab ${tab===id?'on':''}" data-act="bhtab" data-id="${id}" style="${tab===id?'background:'+esc(k.color):''}">${l}</button>`;
+  const head=`<div class="top"><button class="back" data-act="openKid" data-id="${k.id}">←</button><div style="font-size:54px">📋</div><div style="flex:1"><h1>Mes comportements</h1></div><div class="pill">⭐ ${k.points}</div></div>
+  <div class="tabs">${T('gain','⭐ Pour gagner')}${T('lose','⚠️ Pour perdre')}${T('fix','🤝 Pour réparer')}</div>${fixHTML(k)}`;
+  if(tab==='lose')return head+`<div class="actions"><button class="btn big" data-act="readSlip" style="background:${esc(k.color)}">🔊 Lire</button></div>
+  <div class="muted" style="font-size:20px">Ces gestes font perdre des étoiles. Tu peux ensuite réparer pour en regagner.</div>
+  <div style="display:grid;gap:12px">${k.slips.length?k.slips.map(b=>{const rp=repairOf(k,b);return `<div class="rw ${ui.reading===b.id?'read':''}" data-act="saySlip" data-id="${b.id}"><span class="em">${pic(b)}</span><span style="flex:1;text-align:left"><div>${esc(b.label)}</div>${b.desc?`<div class="ds">${esc(b.desc)}</div>`:''}${rp&&rp.pts>0?`<div class="ds">🤝 Pour réparer : ${esc(rp.label)} (+${Math.min(rp.pts,b.pts)} ⭐)</div>`:''}</span><span class="c">−${b.pts} ⭐</span></div>`}).join(''):'<div class="muted" style="font-size:22px">Rien dans cette liste pour le moment.</div>'}</div>`;
+  if(tab==='fix')return head+`<div class="actions"><button class="btn big" data-act="readFix" style="background:${esc(k.color)}">🔊 Lire</button></div>
+  <div class="muted" style="font-size:20px">Quand tu répares, un parent te redonne des étoiles.</div>
+  <div style="display:grid;gap:12px">${k.repairs.length?k.repairs.map(b=>`<div class="rw ${ui.reading===b.id?'read':''}" data-act="sayFix" data-id="${b.id}"><span class="em">${pic(b)}</span><span style="flex:1;text-align:left"><div>${esc(b.label)}</div>${b.desc?`<div class="ds">${esc(b.desc)}</div>`:''}</span><span class="c">+${b.pts} ⭐</span></div>`).join(''):'<div class="muted" style="font-size:22px">Rien dans cette liste pour le moment.</div>'}</div>`;
+  return head+`<div class="actions"><button class="btn big" data-act="readBeh" style="background:${esc(k.color)}">🔊 Lire</button><button class="btn" data-act="shop">🎁 Mes récompenses</button></div>
   <div class="muted" style="font-size:20px">Un parent te donne les étoiles quand tu fais ces beaux gestes.</div>
   <div style="display:grid;gap:12px">${k.behaviors.length?k.behaviors.map(b=>`<div class="rw ${ui.reading===b.id?'read':''}" data-act="sayBeh" data-id="${b.id}"><span class="em">${pic(b)}</span><span style="flex:1;text-align:left"><div>${esc(b.label)}</div>${b.desc?`<div class="ds">${esc(b.desc)}</div>`:''}</span><span class="c">+${b.pts} ⭐</span></div>`).join(''):'<div class="muted" style="font-size:22px">Pas encore d’objectifs. Les parents peuvent en ajouter.</div>'}</div>`;
 }
@@ -325,6 +395,13 @@ function rowsHTML(listKey,items,fields){
     if(f==='alert')return `<label class="muted" style="font-size:16px;display:flex;gap:4px;align-items:center"><input type="checkbox" ${it.alert?'checked':''} ${d} style="width:22px;height:22px">🔔</label>`;
     if(f==='calm')return `<label class="muted" style="font-size:16px;display:flex;gap:4px;align-items:center"><input type="checkbox" ${it.calm?'checked':''} ${d} style="width:22px;height:22px">🫧</label>`;
     if(f==='say')return `<input class="l" style="flex-basis:100%" placeholder="Phrase dite par la voix" value="${esc(it.say||'')}" ${d}>`;
+    if(f==='kind')return `<select ${d} title="Type"><option value="event" ${it.kind!=='off'?'selected':''}>⭐ Activité</option><option value="off" ${it.kind==='off'?'selected':''}>🏠 Congé</option></select>`;
+    if(f==='rep')return `<select ${d} title="Fréquence"><option value="once" ${it.rep!=='weekly'?'selected':''}>Une fois</option><option value="weekly" ${it.rep==='weekly'?'selected':''}>Chaque semaine</option></select>`;
+    if(f==='when')return it.rep==='weekly'?`<select data-list="${listKey}" data-i="${i}" data-f="dow" title="Jour de la semaine">${[1,2,3,4,5,6,0].map(n=>`<option value="${n}" ${String(it.dow)===String(n)?'selected':''}>${WD[n]}</option>`).join('')}</select>`:`<input type="date" value="${esc(it.date||'')}" data-list="${listKey}" data-i="${i}" data-f="date" title="Date">`;
+    if(f==='end')return it.rep==='weekly'?'':`<span class="muted" style="font-size:16px">jusqu’au</span><input type="date" value="${esc(it.end||'')}" ${d} title="Dernier jour (optionnel)">`;
+    if(f==='repairId'){const k=kid(listKey.split(':')[1]);return `<select ${d} title="Geste réparateur proposé"><option value="">Aucun geste</option>${((k&&k.repairs)||[]).map(r=>`<option value="${r.id}" ${it.repairId===r.id?'selected':''}>${esc(r.label)}</option>`).join('')}</select>`}
+    if(f==='repair')return `<input class="l" style="flex-basis:100%" placeholder="Geste réparateur (ex. aller s’excuser) — laisser vide si aucun" value="${esc(it.repair||'')}" ${d}>`;
+    if(f==='rpts')return `<span class="muted" style="font-size:16px">regagne</span><input class="n" type="number" min="0" max="99" value="${it.rpts||0}" title="étoiles regagnées si le geste est fait" ${d}>`;
     if(f==='cost')return `<input class="n" type="number" min="1" max="999" value="${it.cost}" title="prix en points" ${d}>`;
     if(f==='for')return `<select ${d} title="Pour qui ?"><option value="">Pour tous</option>${state.kids.map(k=>`<option value="${k.id}" ${it.for===k.id?'selected':''}>${esc(k.name)}</option>`).join('')}</select>`;
     if(f==='days')return `<span class="days">${[1,2,3,4,5,6,0].map(n=>`<button class="dchip ${(it.days||[]).includes(n)?'on':''}" data-act="day" data-i="${i}" data-d="${n}">${DAYS[n]}</button>`).join('')}</span>`;
@@ -336,8 +413,11 @@ function getList(key){
   if(key==='events')return state.events;
   if(key==='emotions')return state.emotions;
   if(key==='calm')return state.calm;
+  if(key==='cal')return state.cal.items;
   const p=key.split(':');const k=kid(p[1]);if(!k)return null;
   if(p[2]==='b')return k.behaviors;
+  if(p[2]==='s')return k.slips;
+  if(p[2]==='p')return k.repairs;
   if(p[2]==='r'){const r=k.routines.find(x=>x.id===p[3]);return r?r.steps:null}
   return null;
 }
@@ -345,11 +425,12 @@ function pickTarget(p){
   if(!p)return null;
   if(p.list){const L=getList(p.list);return L?L[p.i]:null}
   if(p.rt){const q=p.rt.split(':'),k=kid(q[0]);return k?k.routines.find(x=>x.id===q[1]):null}
+  if(p.pl){const k=kid(p.pl);return k?k.place:null}
   if(p.kid)return kid(p.kid);
   return null;
 }
 function renderParent(){
-  const tabs=[['points','⭐ Points'],['rewards','🎁 Boutique'],['routines','📋 Routines'],['events','⏰ Départs'],['emotions','💬 Émotions'],['settings','⚙️ Réglages']];
+  const tabs=[['points','⭐ Points'],['rewards','🎁 Boutique'],['routines','📋 Routines'],['events','⏰ Départs'],['cal','📅 Calendrier'],['emotions','💬 Émotions'],['settings','⚙️ Réglages']];
   let body='';
   if(ui.tab==='points'){
     body=state.kids.map(k=>`<div class="panel" style="margin-bottom:12px"><h2>${pic(k)} ${esc(k.name)} — ⭐ ${k.points}</h2>
@@ -357,7 +438,18 @@ function renderParent(){
       <button class="btn sm" data-act="adj" data-k="${k.id}" data-n="1">+1</button><button class="btn sm" data-act="adj" data-k="${k.id}" data-n="-1">−1 (discret)</button></div>
       <h3>Échanger contre une récompense</h3><div class="actions">${rewardsFor(k).map(r=>`<button class="btn sm" ${k.points<r.cost?'disabled style="opacity:.4"':''} data-act="redeem" data-k="${k.id}" data-id="${r.id}">${pic(r)} ${esc(r.label)} (${r.cost}⭐)</button>`).join('')}</div>
       <h3>Comportements (pictogramme · texte · points gagnés)</h3>${rowsHTML('k:'+k.id+':b',k.behaviors,['emoji','label','pts','desc'])}
-      <button class="btn sm" data-act="add" data-list="k:${k.id}:b">+ Ajouter un comportement</button></div>`).join('');
+      <button class="btn sm" data-act="add" data-list="k:${k.id}:b">+ Ajouter un comportement</button>
+      <h3 style="margin-top:16px">Comportements qui font perdre des étoiles</h3>
+      ${k.fix?`<div class="alertb" style="background:#E8F6F5;border-color:#2B8F8A;color:#14524F;margin-bottom:8px">🤝 Geste réparateur en attente : <b>${esc(k.fix.repair)}</b> (+${k.fix.rpts} ⭐)${k.fix.claimed?'<br>✋ '+esc(k.name)+' dit l’avoir fait.':''}<div class="actions" style="margin-top:8px"><button class="btn sm" data-act="fixdone" data-k="${k.id}">✅ C’est fait (+${k.fix.rpts} ⭐)</button><button class="btn sm" data-act="fixcancel" data-k="${k.id}">Annuler</button></div></div>`:''}
+      <div class="actions">${k.slips.length?k.slips.map(b=>`<button class="btn sm red" data-act="slip" data-k="${k.id}" data-id="${b.id}">${pic(b)} ${esc(b.label)} <b>−${b.pts}</b></button>`).join(''):'<span class="muted">Aucun comportement pour l’instant.</span>'}</div>
+      <div class="muted" style="margin:8px 0 4px">Pictogramme · comportement · étoiles perdues · geste réparateur proposé · explication lue à voix haute (optionnel)</div>
+      ${rowsHTML('k:'+k.id+':s',k.slips,['emoji','label','pts','repairId','desc'])}
+      <button class="btn sm" data-act="add" data-list="k:${k.id}:s">+ Ajouter un comportement qui fait perdre</button>
+      <h3 style="margin-top:16px">Gestes réparateurs</h3>
+      <div class="actions">${k.repairs.length?k.repairs.map(r=>`<button class="btn sm" data-act="repairnow" data-k="${k.id}" data-id="${r.id}" style="background:#2B8F8A">${pic(r)} ${esc(r.label)} <b>+${r.pts}</b></button>`).join(''):'<span class="muted">Aucun geste pour l’instant.</span>'}</div>
+      <div class="muted" style="margin:8px 0 4px">Pictogramme · geste · étoiles regagnées · explication (optionnel). Un bouton vert donne les étoiles tout de suite.</div>
+      ${rowsHTML('k:'+k.id+':p',k.repairs,['emoji','label','pts','desc'])}
+      <button class="btn sm" data-act="add" data-list="k:${k.id}:p">+ Ajouter un geste réparateur</button></div>`).join('');
   }
   if(ui.tab==='rewards'){
     body=`<div class="panel"><h2>Récompenses réelles et leur prix en points</h2><div class="muted" style="margin-bottom:6px">Pictogramme · texte · prix · pour qui</div>${rowsHTML('rewards',state.rewards,['emoji','label','cost','for'])}<button class="btn sm" data-act="add" data-list="rewards">+ Ajouter une récompense</button></div>`;
@@ -380,6 +472,7 @@ function renderParent(){
     <div class="panel" style="margin-top:12px"><h2>Émotions affichées</h2><div class="muted" style="margin-bottom:6px">Pictogramme · texte · couleur · 🔔 prévient les parents sur l’accueil · 🫧 propose de se calmer · phrase dite ({n} = prénom)</div>${rowsHTML('emotions',state.emotions,['emoji','label','color','alert','calm','say'])}<button class="btn sm" data-act="add" data-list="emotions">+ Ajouter une émotion</button></div>
     <div class="panel" style="margin-top:12px"><h2>Boîte à outils pour se calmer</h2>${rowsHTML('calm',state.calm,['emoji','label','anim','desc'])}<button class="btn sm" data-act="add" data-list="calm">+ Ajouter une idée</button></div>`;
   }
+  if(ui.tab==='cal'){body=calParent()}
   if(ui.tab==='events'){
     body=`<div class="panel"><h2>Compte à rebours sur l’écran</h2><div class="muted" style="margin-bottom:8px">Ex. « On part pour l’école » à 7 h 45, lundi au vendredi. Le compte à rebours apparaît 4 h avant et devient orange puis rouge. La voix annonce 15, 10, 5 et 1 minute avant.</div>
     ${rowsHTML('events',state.events,['emoji','label','time','days'])}<button class="btn sm" data-act="add" data-list="events">+ Ajouter un départ ou un rendez-vous</button></div>`;
@@ -393,6 +486,8 @@ function renderParent(){
     <h2 style="margin-top:18px">Enfants</h2>${state.kids.map(k=>`<div class="row">${picBtn('data-kid="'+k.id+'"',k)}<input class="l" value="${esc(k.name)}" data-kn="${k.id}:name"><input type="color" value="${esc(k.color)}" data-kn="${k.id}:color" style="width:56px;height:46px;padding:2px"><button class="btn sm red" data-act="delKid" data-id="${k.id}" ${state.kids.length<2?'disabled style="opacity:.4"':''}>${ui.confirmDel===k.id?'Confirmer':'✕'}</button></div>`).join('')}
     <button class="btn sm" data-act="addKid">+ Ajouter un enfant</button>
     <h2 style="margin-top:18px">NIP parent</h2><div class="row"><input class="n" inputmode="numeric" maxlength="4" value="${esc(state.pin)}" data-set="pin"> <span class="muted">4 chiffres</span></div>
+    <h2 style="margin-top:18px">Thème de l’accueil</h2>
+    <div class="row"><select class="l" data-set="theme"><option value="winter" ${state.theme!=='off'?'selected':''}>❄️ Hiver / Noël</option><option value="off" ${state.theme==='off'?'selected':''}>Standard</option></select></div>
     <h2 style="margin-top:18px">Synchronisation (téléphone ⇄ tablette)</h2>
     <div class="muted" style="margin-bottom:6px">Même adresse, même clé et même code sur chaque appareil. Les changements apparaissent sur l’autre appareil en quelques secondes.</div>
     <div class="row"><span class="muted">Adresse du projet :</span><input class="l" data-sy="url" placeholder="https://xxxx.supabase.co" value="${esc(ui.syncDraft.url)}" autocapitalize="off" autocorrect="off"></div>
@@ -400,7 +495,7 @@ function renderParent(){
     <div class="row"><span class="muted">Code famille :</span><input class="l" data-sy="code" placeholder="au moins 12 caractères" value="${esc(ui.syncDraft.code)}" autocapitalize="off" autocorrect="off"><button class="btn sm" data-act="syncGen">Générer</button></div>
     <div class="actions"><button class="btn sm" data-act="syncOn">${syncOnFlag()?'Enregistrer':'Activer'}</button>${syncOnFlag()?'<button class="btn sm" data-act="syncNow">Synchroniser maintenant</button><button class="btn sm red" data-act="syncOff">Désactiver</button>':''}</div>
     <div class="muted" id="syncMsg" style="margin:6px 0 0">${esc(ui.syncMsg||(syncOnFlag()?'Synchronisation active':'Synchronisation désactivée'))}</div>
-    <h2 style="margin-top:18px">Remise à zéro</h2><div class="muted" style="margin-bottom:6px">Version du planner : 13 (23 nov.)</div><div class="actions"><button class="btn sm" data-act="resetDay">Recommencer la journée</button><button class="btn sm red" data-act="resetPts">${ui.confirmReset?'Confirmer : tout remettre à 0':'Remettre les points à 0'}</button></div></div>`;
+    <h2 style="margin-top:18px">Remise à zéro</h2><div class="muted" style="margin-bottom:6px">Version du planner : 18 (23 nov.)</div><div class="actions"><button class="btn sm" data-act="resetDay">Recommencer la journée</button><button class="btn sm red" data-act="resetPts">${ui.confirmReset?'Confirmer : tout remettre à 0':'Remettre les points à 0'}</button></div></div>`;
   }
   return `<div class="modal"><div class="sheet" style="width:min(980px,96vw)"><div class="top" style="margin-bottom:12px"><h1 style="font-size:26px">🔓 Mode parent</h1><button class="btn" data-act="closeParent">Fermer</button></div>
   <div class="cmd"><input id="cmd" placeholder="Commande : « Change l’heure du départ à 7 h 30 »" autocomplete="off"><button class="btn sm" data-act="mic" id="micbtn" style="display:${(window.SpeechRecognition||window.webkitSpeechRecognition)?'flex':'none'}">🎤</button><button class="btn sm" data-act="cmdgo">OK</button></div><div class="cmdmsg">${esc(ui.cmdMsg)}</div>
@@ -548,10 +643,84 @@ function renderTimer(){
   if(!ui.timer)return '';
   return `<div class="timer"><span>⏱</span><div class="bar"><i id="tbar" style="width:100%"></i></div><span id="tleft"></span><button class="btn sm" data-act="timerstop" style="color:#23303F">Arrêter</button></div>`;
 }
+
+/* ---------- calendrier : logique ---------- */
+const WD=['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'],WD3=['dim','lun','mar','mer','jeu','ven','sam'],MOIS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function dAt(s){const p=String(s).split('-');return new Date(+p[0],+p[1]-1,+p[2],12)}
+function addD(d,n){const x=new Date(d.getTime());x.setDate(x.getDate()+n);return x}
+function calKid(){return ui.calFrom==='kid'?ui.kidId:null}
+function matchItem(it,d){const s=ymd(d);if(it.rep==='weekly')return String(it.dow)===String(d.getDay());return !!it.date&&it.date<=s&&s<=(it.end||it.date)}
+function kidDay(d,k){const items=state.cal.items.filter(it=>(!it.for||it.for===k.id)&&matchItem(it,d)),off=items.filter(i=>i.kind==='off'),ev=items.filter(i=>i.kind!=='off'),pl=k.place;return {k,pl,off,ev,attend:pl.days.includes(d.getDay())&&!off.length}}
+function dayInfo(d,kidId){const ks=kidId&&kid(kidId)?[kid(kidId)]:state.kids,days=ks.map(k=>kidDay(d,k)),seen={},items=[];
+  days.forEach(x=>x.off.concat(x.ev).forEach(i=>{if(!seen[i.id]){seen[i.id]=1;items.push(i)}}));
+  const icons=[];days.forEach(x=>{const c=x.attend?x.pl.emoji:'🏠';if(!icons.includes(c))icons.push(c)});
+  return {days,items,attend:days.some(x=>x.attend),icons,single:ks.length===1}}
+function dodosToWeekend(t,kidId){const ks=kidId&&kid(kidId)?[kid(kidId)]:state.kids;for(let n=0;n<8;n++){const w=addD(t,n).getDay();if(!ks.some(k=>k.place.days.includes(w)))return n}return 0}
+function rel(n){return n===0?'aujourd’hui':n===1?'demain':'dans '+n+' dodos'}
+function relCap(n){return n===0?'Aujourd’hui !':n===1?'Demain · 1 dodo':n+' dodos'}
+function nextOcc(it,t){for(let n=0;n<=120;n++)if(matchItem(it,addD(t,n)))return n;return -1}
+function upcoming(t,kidId){const out=[];state.cal.items.forEach(it=>{if(it.for&&kidId&&it.for!==kidId)return;const n=nextOcc(it,t);if(n>=0)out.push({it,n})});out.sort((a,b)=>a.n-b.n);return out.slice(0,10)}
+function dayLabel(d,t){const n=Math.round((d.getTime()-t.getTime())/864e5);return n===0?'Aujourd’hui':n===1?'Demain':n===-1?'Hier':WD[d.getDay()]+' '+d.getDate()+' '+MOIS[d.getMonth()]}
+function whereText(x){return x.attend?x.pl.label:'à la maison'+(x.off.length?' ('+x.off.map(o=>o.label).join(', ')+')':'')}
+function dayText(d,t,kidId){const i=dayInfo(d,kidId),l=dayLabel(d,t);
+  const w=i.single?whereText(i.days[0]):i.days.map(x=>x.k.name+', '+whereText(x)).join('. ');
+  const ev=[];i.days.forEach(x=>x.ev.forEach(e=>{if(!ev.includes(e.label))ev.push(e.label)}));
+  return l+' : '+w+'.'+(ev.length?' Au programme : '+ev.join(', ')+'.':'')}
+function calSpeech(){const t=dAt(today()),k=calKid(),w=dodosToWeekend(t,k);
+  let x='Aujourd’hui, nous sommes '+WD[t.getDay()]+' '+t.getDate()+' '+MOIS[t.getMonth()]+'. '+dayText(addD(t,1),t,k)+' ';
+  x+=w===0?'C’est la fin de semaine !':'Il reste '+w+' dodo'+(w>1?'s':'')+' avant la fin de semaine. ';
+  const up=upcoming(t,k).filter(u=>u.n>0).slice(0,3);if(up.length)x+='Bientôt : '+up.map(u=>u.it.label+', '+rel(u.n)).join('. ')+'.';return x}
+function renderCal(){
+  const t=dAt(today()),k=calKid(),kd=k?kid(k):null,tm=addD(t,1),it=dayInfo(tm,k),w=dodosToWeekend(t,k),view=ui.calView||'week';
+  const sel=ui.calDay?dAt(ui.calDay):t;
+  const evs=[];it.days.forEach(x=>x.ev.forEach(e=>{if(!evs.includes(e))evs.push(e)}));
+  const who=it.single?`<div class="cb">${it.days[0].attend?esc(it.days[0].pl.label):'À la maison !'}</div><div class="cs">${!it.days[0].attend&&it.days[0].off.length?esc(it.days[0].off.map(x=>x.emoji+' '+x.label).join(' · ')):(!it.days[0].attend?'🎉 Fin de semaine':'')}</div>`
+    :`<div style="display:grid;gap:4px;margin-top:4px">${it.days.map(x=>`<div style="font-size:clamp(22px,4vw,30px);font-weight:900;line-height:1.15">${esc(x.k.emoji)} ${esc(x.k.name)} : ${x.attend?esc(x.pl.emoji+' '+x.pl.label):'🏠 À la maison'}</div>`).join('')}</div>`;
+  const hero=`<div class="chero" style="background:${it.attend?'#4C8DF6':'#2FA66A'}"><div class="ci">${it.single?(it.days[0].attend?esc(it.days[0].pl.emoji):'🏠'):'📅'}</div><div style="flex:1"><div class="ct">Demain, ${WD[tm.getDay()]} ${tm.getDate()} ${MOIS[tm.getMonth()]}</div>${who}${evs.length?'<div class="cs">'+evs.map(x=>pic(x)+' '+esc(x.label)).join(' · ')+'</div>':''}</div></div>`;
+  const dd=w===0?`<div class="chero" style="background:#E8873D"><div class="ci">🎉</div><div><div class="ct">Fin de semaine</div><div class="cb">C’est la fin de semaine !</div></div></div>`
+   :`<div class="chero" style="background:#6B5BD2"><div class="ci">🌙</div><div style="flex:1"><div class="ct">Avant la fin de semaine</div><div class="cb">${w} dodo${w>1?'s':''}</div><div class="dodos">${'🌙'.repeat(Math.min(w,7))}</div></div></div>`;
+  let main='';
+  if(view==='week'){
+    const mon=addD(t,-((t.getDay()+6)%7));
+    main=`<div class="wk">${Array.from({length:7},(_,i)=>{const d=addD(mon,i),inf=dayInfo(d,k),s=ymd(d);return `<button class="wd ${inf.attend?'sch':'off'} ${s===ymd(t)?'today':''} ${s===ymd(sel)?'sel':''}" data-act="calday" data-id="${s}"><span class="w">${WD3[d.getDay()]}</span><span class="n">${d.getDate()}</span><span class="ic">${inf.icons.join('')}</span><span class="ev">${inf.items.slice(0,3).map(x=>pic(x)).join(' ')}</span></button>`}).join('')}</div>`;
+  }else{
+    const base=new Date(t.getFullYear(),t.getMonth()+(ui.calMon||0),1,12),first=(base.getDay()+6)%7,dim=new Date(base.getFullYear(),base.getMonth()+1,0).getDate();
+    let cells='';for(let i=0;i<first;i++)cells+='<div></div>';
+    for(let n=1;n<=dim;n++){const d=new Date(base.getFullYear(),base.getMonth(),n,12),inf=dayInfo(d,k),s=ymd(d),offAny=inf.days.some(x=>x.off.length&&x.pl.days.includes(d.getDay()));
+      cells+=`<button class="mc ${inf.attend?'sch':(offAny?'off':'we')} ${s===ymd(t)?'today':''} ${s===ymd(sel)?'sel':''}" data-act="calday" data-id="${s}">${n}<small>${inf.items.slice(0,2).map(x=>pic(x)).join('')}</small></button>`}
+    main=`<div class="actions" style="justify-content:space-between"><button class="btn sm" data-act="calm" data-n="-1">◀</button><b style="font-size:26px;text-transform:capitalize">${MOIS[base.getMonth()]} ${base.getFullYear()}</b><button class="btn sm" data-act="calm" data-n="1">▶</button></div><div class="mg">${['L','M','M','J','V','S','D'].map(x=>`<div class="h">${x}</div>`).join('')}${cells}</div>`;
+  }
+  const si=dayInfo(sel,k),sev=[];si.days.forEach(x=>x.ev.forEach(e=>{if(!sev.includes(e.label))sev.push(e.label)}));
+  const detail=`<div class="up" style="border-color:${si.attend?'#4C8DF6':'#2FA66A'}"><span class="em">${si.single?(si.days[0].attend?esc(si.days[0].pl.emoji):'🏠'):'📅'}</span><span class="tx">${esc(dayLabel(sel,t))}<div>${si.single?esc(whereText(si.days[0]).replace(/^./,c=>c.toUpperCase())):si.days.map(x=>esc(x.k.emoji+' '+(x.attend?x.pl.label:'maison'))).join(' · ')}${sev.length?' · '+esc(sev.join(', ')):''}</div></span><button class="btn sm" data-act="sayDay" data-id="${ymd(sel)}">🔊</button></div>`;
+  const up=upcoming(t,k);
+  const list=up.length?up.map(u=>{const x=u.it,kk=x.for?kid(x.for):null;return `<div class="up"><span class="em">${pic(x)}</span><span class="tx">${esc(x.label)}${kk?' '+esc(kk.emoji):''}<div>${x.kind==='off'?'Congé':'Activité'}${x.desc?' · '+esc(x.desc):''}</div></span><span class="c">${esc(relCap(u.n))}</span></div>`}).join(''):'<div class="muted" style="font-size:20px">Rien de prévu pour le moment.</div>';
+  return `<div class="top"><button class="back" data-act="calback">←</button><div style="font-size:54px">📅</div><div style="flex:1"><h1>${kd?'Mon calendrier':'Notre calendrier'}</h1><div class="sub">${esc(WD[t.getDay()])} ${t.getDate()} ${esc(MOIS[t.getMonth()])}</div></div><button class="btn big" data-act="readCal" style="background:#6B5BD2">🔊 Lire</button></div>
+  <div class="chrow">${hero}${dd}</div>
+  <div class="tabs"><button class="tab ${view==='week'?'on':''}" data-act="calview" data-id="week" style="${view==='week'?'background:#23303F':''}">📆 Semaine</button><button class="tab ${view==='month'?'on':''}" data-act="calview" data-id="month" style="${view==='month'?'background:#23303F':''}">🗓️ Mois</button></div>
+  ${main}${detail}
+  <h2 style="margin:6px 0 0;font-size:26px">Bientôt</h2><div style="display:grid;gap:10px">${list}</div>`;
+}
+function calParent(){
+  const c=state.cal;
+  return `<div class="panel"><h2>Où va chaque enfant ?</h2><div class="muted" style="margin-bottom:6px">Pictogramme · nom du lieu (école, garderie…) · jours de présence. Les jours non cochés sont à la maison.</div>
+  ${state.kids.map(k=>`<div class="row">${picBtn('data-pl="'+k.id+'"',k.place)}<span style="font-weight:900;min-width:120px">${esc(k.emoji)} ${esc(k.name)}</span><input class="l" value="${esc(k.place.label)}" data-plc="${k.id}:label"><span class="days">${[1,2,3,4,5,6,0].map(n=>`<button class="dchip ${k.place.days.includes(n)?'on':''}" data-act="pday" data-k="${k.id}" data-n="${n}">${DAYS[n]}</button>`).join('')}</span></div>`).join('')}
+  <h2 style="margin-top:16px">Événements, congés et activités</h2>
+  <div class="muted" style="margin-bottom:6px">Pictogramme · titre · type · fréquence · date (ou jour de la semaine) · pour qui · explication (optionnel). Un « congé » s’applique seulement à l’enfant choisi dans « pour qui » (ex. congé pédagogique de l’école, mais pas de la garderie). Pour plusieurs jours (vacances, relâche), choisis « Une fois » et remplis « jusqu’au ».</div>
+  ${rowsHTML('cal',c.items,['emoji','label','kind','rep','when','end','for','desc'])}
+  <div class="actions" style="margin-top:8px"><button class="btn sm" data-act="addcal" data-p="off">+ Congé</button><button class="btn sm" data-act="addcal" data-p="vac">+ Vacances</button><button class="btn sm" data-act="addcal" data-p="event">+ Activité spéciale</button><button class="btn sm" data-act="addcal" data-p="weekly">+ Chaque semaine</button></div></div>`}
+function buildDeco(){
+  if(document.getElementById('deco'))return;const d=document.createElement('div');d.id='deco';
+  let h='<div class="garland">'+'<i></i>'.repeat(18)+'</div>';
+  for(let i=0;i<26;i++){const sz=14+Math.random()*20;h+='<span class="fl" style="left:'+(Math.random()*100).toFixed(1)+'%;font-size:'+sz.toFixed(0)+'px;animation-duration:'+(9+Math.random()*10).toFixed(1)+'s;animation-delay:-'+(Math.random()*16).toFixed(1)+'s;--dx:'+((Math.random()*80)-40).toFixed(0)+'px">❄</span>'}
+  h+='<svg class="hills" viewBox="0 0 1200 110" preserveAspectRatio="none"><path d="M0 70 Q150 20 320 62 T640 58 T960 52 T1200 64 V110 H0Z" fill="#DCEBFA" opacity=".55"/><path d="M0 90 Q200 48 420 84 T820 78 T1200 86 V110 H0Z" fill="#fff"/></svg><span class="dc" style="left:2.5%">🎄</span><span class="dc" style="right:170px">⛄</span>';
+  d.innerHTML=h;document.body.insertBefore(d,document.body.firstChild)}
+function applyTheme(onHome){buildDeco();document.body.classList.toggle('th-winter',!!onHome&&state.theme!=='off')}
 function render(){
   if(ui.screen!=='breath')ui.bTok=(ui.bTok||0)+1;
   const base=(ui.screen==='pin'||ui.screen==='parent')?(ui.prevScreen||'home'):ui.screen;
-  $app.innerHTML=base==='home'?renderHome():base==='kid'?renderKid():base==='stars'?renderStars():base==='emo'?renderEmo():base==='calm'?renderCalm():base==='breath'?renderBreath():base==='guide'?renderGuide():base==='tool'?renderTool():renderShop();
+  applyTheme(base==='home');
+  $app.innerHTML=base==='home'?renderHome():base==='kid'?renderKid():base==='stars'?renderStars():base==='emo'?renderEmo():base==='calm'?renderCalm():base==='cal'?renderCal():base==='breath'?renderBreath():base==='guide'?renderGuide():base==='tool'?renderTool():renderShop();
   let layer='';
   if(ui.screen==='pin')layer=renderPin().replace('<div class="modal">','<div class="modal" style="z-index:130">');
   if(ui.screen==='parent')layer=renderParent()+(ui.picker?renderPicker():'');
@@ -641,6 +810,19 @@ document.addEventListener('click',function(e){
   if(a==='pincancel'||a==='closeParent'){ui.pinFor=null;ui.screen=ui.prevScreen||'home';ui.picker=null;render();return}
   if(a==='ptab'){ui.tab=id;ui.confirmReset=false;ui.confirmDel=null;render();return}
   if(a==='home'){ui.screen='home';render();return}
+  if(a==='cal'){ui.calFrom=ui.screen;ui.calDay=null;ui.calMon=0;ui.screen='cal';render();return}
+  if(a==='calback'){ui.screen=ui.calFrom||'home';render();return}
+  if(a==='calday'){ui.calDay=id;render();return}
+  if(a==='calview'){ui.calView=id;render();return}
+  if(a==='calm'){ui.calMon=(ui.calMon||0)+(+t.dataset.n);render();return}
+  if(a==='readCal'){speak(calSpeech());return}
+  if(a==='sayDay'){speak(dayText(dAt(id),dAt(today()),calKid()));return}
+  if(a==='pday'){const k=kid(t.dataset.k),n=+t.dataset.n;if(k){k.place.days=k.place.days.includes(n)?k.place.days.filter(x=>x!==n):k.place.days.concat(n);save();render()}return}
+  if(a==='addcal'){const p=t.dataset.p,b={id:uid(),emoji:'⭐',label:'Nouvel événement',kind:'event',rep:'once',dow:'5',date:today(),end:'',for:'',desc:''};
+    if(p==='off'){b.emoji='🏠';b.label='Congé pédagogique';b.kind='off';b.for='lc'}
+    if(p==='vac'){b.emoji='🏖️';b.label='Vacances';b.kind='off'}
+    if(p==='weekly'){b.rep='weekly';b.label='Activité de la semaine';b.date=''}
+    state.cal.items.push(b);save();render();return}
   if(a==='openKid'){ui.kidId=id||ui.kidId;ui.routineId=null;ui.screen='kid';render();return}
   if(a==='routine'){ui.routineId=id;render();return}
   if(a==='emoopen'){ui.emoSel=null;ui.screen='emo';render();return}
@@ -656,6 +838,17 @@ document.addEventListener('click',function(e){
   if(a==='guiderepeat'){guideSay();return}
   if(a==='guidenext'){const g=GUIDES[ui.guide.id];if(ui.guide.i+1<g.steps.length){ui.guide.i++;render();guideSay()}else{ui.screen='calm';render();speak('Bravo, tu as terminé. Tu peux choisir autre chose pour te calmer.')}return}
   if(a==='stars'){ui.screen='stars';render();return}
+  if(a==='bhtab'){ui.bhTab=id;render();return}
+  if(a==='slip'){const k=kid(t.dataset.k),b=k&&k.slips.find(x=>x.id===id);if(!b)return;addPts(k,-b.pts);const rp=k.repairs.find(x=>x.id===b.repairId);k.fix=(rp&&rp.pts>0)?{sid:b.id,label:b.label,repair:rp.label,rpts:Math.min(rp.pts,b.pts),claimed:false,t:Date.now()}:null;save();render();return}
+  if(a==='repairnow'){const k=kid(t.dataset.k),r=k&&k.repairs.find(x=>x.id===id);if(!r)return;addPts(k,r.pts);k.fix=null;save();render();return}
+  if(a==='fixdone'){const k=kid(t.dataset.k);if(k&&k.fix){addPts(k,k.fix.rpts);k.fix=null;save();render()}return}
+  if(a==='fixcancel'){const k=kid(t.dataset.k);if(k){k.fix=null;save();render()}return}
+  if(a==='fixclaim'){const k=curKid();if(k&&k.fix){k.fix.claimed=true;save();render();speak('Bravo '+k.name+' ! Dis-le à un parent.')}return}
+  if(a==='fixsay'){const k=curKid();if(k&&k.fix)speak(fixText(k));return}
+  if(a==='readSlip'){const k=curKid();if(k.slips.length)readSeq('Voici ce qui fait perdre des étoiles. Mais tu peux toujours réparer, '+k.name+'.',k.slips,slipText);return}
+  if(a==='readFix'){const k=curKid();if(k.repairs.length)readSeq('Voici des gestes pour réparer, '+k.name+'.',k.repairs,repairText);return}
+  if(a==='sayFix'){const b=curKid().repairs.find(x=>x.id===id);if(b)speak(repairText(b));return}
+  if(a==='saySlip'){const b=curKid().slips.find(x=>x.id===id);if(b)speak(slipText(b));return}
   if(a==='stepgo'){const k=curKid(),s=stepsOf(k).steps.find(x=>x.id===id);if(s)startStepTimer(k,s);return}
   if(a==='addtime'){const m=+t.dataset.m;if(parentActive()){addTime(id,m)}else{ui.pinFor={t:'addtime',id,m};ui.pin='';ui.prevScreen=(ui.screen==='pin'||ui.screen==='parent')?ui.prevScreen:ui.screen;ui.screen='pin';render()}return}
   if(a==='readBeh'){const k=curKid();if(k.behaviors.length)readSeq('Voici comment gagner encore des étoiles, '+k.name+'.',k.behaviors,behText);return}
@@ -676,20 +869,23 @@ document.addEventListener('click',function(e){
   if(a==='er'){ui.editRoutine=id;render();return}
   if(a==='addRoutine'){const k=kid(ui.editKid);const r={id:uid(),name:'Nouvelle routine',emoji:'⭐',from:12,bonus:3,steps:[S('Nouvelle étape','⭐')]};k.routines.push(r);ui.editRoutine=r.id;save();render();return}
   if(a==='delRoutine'){const k=kid(ui.editKid);if(k.routines.length>1){k.routines=k.routines.filter(x=>x.id!==ui.editRoutine);ui.editRoutine=null;ui.routineId=null;save();render()}return}
-  if(a==='addKid'){const cols=['#2FA6A0','#E8873D','#6FB04B','#C25BA8'];state.kids.push({id:uid(),name:'Nouvel enfant',emoji:'🐻',color:cols[state.kids.length%cols.length],points:0,goal:null,routines:[{id:uid(),name:'Matin',emoji:'🌅',from:5,bonus:3,steps:[S('Déjeuner','🥣')]}],behaviors:[]});save();render();return}
+  if(a==='addKid'){const cols=['#2FA6A0','#E8873D','#6FB04B','#C25BA8'];state.kids.push({id:uid(),name:'Nouvel enfant',emoji:'🐻',color:cols[state.kids.length%cols.length],points:0,goal:null,fix:null,place:{label:'École',emoji:'🎒',days:[1,2,3,4,5]},slips:defaultSlips(),repairs:defaultRepairs(),routines:[{id:uid(),name:'Matin',emoji:'🌅',from:5,bonus:3,steps:[S('Déjeuner','🥣')]}],behaviors:[]});save();render();return}
   if(a==='delKid'){if(state.kids.length<2)return;if(ui.confirmDel!==id){ui.confirmDel=id}else{state.kids=state.kids.filter(x=>x.id!==id);ui.confirmDel=null;ui.editKid=null;save()}render();return}
   if(a==='day'){const ev=state.events[+t.dataset.i],d=+t.dataset.d;ev.days=ev.days||[];ev.days=ev.days.includes(d)?ev.days.filter(x=>x!==d):ev.days.concat(d);save();render();return}
   if(a==='add'){const L=getList(t.dataset.list),key=t.dataset.list;if(!L)return;
     if(key==='rewards')L.push({id:uid(),label:'Nouvelle récompense',emoji:'🎁',cost:30,for:''});
     else if(key==='events')L.push({id:uid(),label:'Nouveau départ',emoji:'⏰',time:'07:45',days:[1,2,3,4,5]});
     else if(key==='emotions')L.push({id:uid(),emoji:'🙂',label:'nouvelle émotion',color:'#7A8CA0',say:'{n}, tu te sens ainsi.',alert:false,calm:false});
+    else if(key==='cal')L.push({id:uid(),emoji:'⭐',label:'Nouvel événement',kind:'event',rep:'once',dow:'5',date:today(),end:'',for:'',desc:''});
     else if(key==='calm')L.push({id:uid(),emoji:'⭐',label:'Nouvelle idée',desc:'',anim:'floaty'});
     else if(key.split(':')[2]==='b')L.push({id:uid(),label:'Nouveau comportement',emoji:'⭐',pts:2});
+    else if(key.split(':')[2]==='s')L.push({id:uid(),label:'Nouveau comportement à corriger',emoji:'⚠️',pts:1,repairId:''});
+    else if(key.split(':')[2]==='p')L.push({id:uid(),label:'Nouveau geste réparateur',emoji:'🤝',pts:1});
     else L.push(S('Nouvelle étape','⭐'));
     save();render();return}
   if(a==='del'){const L=getList(t.dataset.list);if(L){L.splice(+t.dataset.i,1);save();render()}return}
   if(a==='up'){const L=getList(t.dataset.list),i=+t.dataset.i;if(L&&i>0){[L[i-1],L[i]]=[L[i],L[i-1]];save();render()}return}
-  if(a==='pick'){ui.picker=t.dataset.list?{list:t.dataset.list,i:+t.dataset.i}:t.dataset.rt?{rt:t.dataset.rt}:{kid:t.dataset.kid};render();return}
+  if(a==='pick'){ui.picker=t.dataset.list?{list:t.dataset.list,i:+t.dataset.i}:t.dataset.rt?{rt:t.dataset.rt}:t.dataset.pl?{pl:t.dataset.pl}:{kid:t.dataset.kid};render();return}
   if(a==='pickclose'){ui.picker=null;render();return}
   if(a==='pickemoji'){const it=pickTarget(ui.picker);if(it){it.emoji=t.dataset.e;it.img='';save()}render();return}
   if(a==='pickclear'){const it=pickTarget(ui.picker);if(it){it.img='';save()}render();return}
@@ -704,13 +900,14 @@ document.addEventListener('click',function(e){
 function onField(e){
   const t=e.target;
   if(t.dataset&&t.dataset.sy){ui.syncDraft[t.dataset.sy]=t.value.trim();return}
-  if(t.dataset.list){const L=getList(t.dataset.list);if(!L)return;const it=L[+t.dataset.i],f=t.dataset.f;if(t.type==='checkbox'){it[f]=t.checked;save();return}it[f]=(f==='pts'||f==='cost')?Math.max(0,parseInt(t.value||'0',10)||0):(f==='dur'?(parseFloat(t.value)>0?parseFloat(t.value):''):t.value);save();return}
+  if(t.dataset.list){const L=getList(t.dataset.list);if(!L)return;const it=L[+t.dataset.i],f=t.dataset.f;if(t.type==='checkbox'){it[f]=t.checked;save();return}if(f==='kind'||f==='rep'){it[f]=t.value;save();render();return}it[f]=(f==='pts'||f==='cost'||f==='rpts')?Math.max(0,parseInt(t.value||'0',10)||0):(f==='dur'?(parseFloat(t.value)>0?parseFloat(t.value):''):t.value);save();return}
   if(t.dataset.bonus){const p=t.dataset.bonus.split(':'),r=kid(p[0]).routines.find(x=>x.id===p[1]);r.bonus=Math.max(0,parseInt(t.value||'0',10)||0);save();return}
   if(t.dataset.rtn){const p=t.dataset.rtn.split(':'),r=kid(p[0]).routines.find(x=>x.id===p[1]);r[p[2]]=p[2]==='from'?parseInt(t.value,10):t.value;save();return}
   if(t.dataset.chain){const p=t.dataset.chain.split(':');kid(p[0]).routines.find(x=>x.id===p[1]).chain=t.checked;save();return}
   if(t.dataset.vo){state.voiceOn=t.checked;save();if(!t.checked)stopSpeech();return}
   if(t.dataset.fsc){ui.fsChoose.min=parseFloat(t.value)||5;return}
-  if(t.dataset.set){const f=t.dataset.set;state[f]=(f==='rate'||f==='pitch')?parseFloat(t.value):t.value;save();return}
+  if(t.dataset.set){const f=t.dataset.set;state[f]=(f==='rate'||f==='pitch')?parseFloat(t.value):t.value;save();if(f==='theme')applyTheme(((ui.screen==='parent'||ui.screen==='pin')?ui.prevScreen:ui.screen)==='home');return}
+  if(t.dataset.plc){const p=t.dataset.plc.split(':');kid(p[0]).place[p[1]]=t.value;save();return}
   if(t.dataset.kn){const p=t.dataset.kn.split(':');kid(p[0])[p[1]]=t.value;save();return}
   if(t.dataset.pe){const it=pickTarget(ui.picker);if(it&&t.value){it.emoji=t.value;it.img='';save()}return}
 }
@@ -782,11 +979,10 @@ async function rpc(fn,args){const h={'apikey':sync.key,'Content-Type':'applicati
 function payload(){const o={};Object.keys(state).forEach(k=>{if(LOCAL_KEYS.indexOf(k)<0&&k!=='_ts')o[k]=state[k]});return o}
 function hash(){return JSON.stringify(payload())}
 function setSyncMsg(m){ui.syncMsg=m;const el=document.getElementById('syncMsg');if(el)el.textContent=m}
-function toArr(x){return Array.isArray(x)?x:(x&&typeof x==='object'?Object.values(x):[])}
 function fixState(){['done','bonusDone','stepTimers'].forEach(k=>{if(!state[k]||typeof state[k]!=='object')state[k]={}});
   ['emoLog','events','calm','emotions','rewards','kids'].forEach(k=>state[k]=toArr(state[k]));
-  state.events.forEach(ev=>ev.days=toArr(ev.days));
-  state.kids.forEach(k=>{k.behaviors=toArr(k.behaviors);k.routines=toArr(k.routines);k.routines.forEach(r=>r.steps=toArr(r.steps));if(k.goal===undefined)k.goal=null})}
+  normCal();state.events.forEach(ev=>ev.days=toArr(ev.days));
+  state.kids.forEach(k=>{k.behaviors=toArr(k.behaviors);if(k.slips!==undefined)k.slips=toArr(k.slips);if(k.repairs!==undefined)k.repairs=toArr(k.repairs);migrateKid(k);k.routines=toArr(k.routines);k.routines.forEach(r=>r.steps=toArr(r.steps));if(k.goal===undefined)k.goal=null})}
 function syncDirty(){if(!syncOnFlag()||syncApplying)return;if(hash()===syncLast)return;clearTimeout(syncT);syncT=setTimeout(syncPush,900)}
 async function syncPush(){if(!syncOnFlag())return;const h=hash();state._ts=Date.now();try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
   try{await rpc('planner_put',{c:sync.code,d:payload(),t:state._ts});syncLast=h;setSyncMsg('✓ Synchronisé à '+new Date().toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'}))}
